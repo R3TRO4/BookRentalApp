@@ -1,6 +1,7 @@
 package org.pawlak.rentalApp.model;
 
 import org.pawlak.rentalApp.model.enums.BookGenres;
+import org.pawlak.rentalApp.model.enums.UserRole;
 
 public class User {
     private int id;
@@ -8,13 +9,15 @@ public class User {
     private String email;
     private String password;
     private BookGenres favoriteGenre;
+    private UserRole role;
 
-    public User(final int id, final String name, final String email, final String password, final BookGenres favoriteGenre) {
+    public User(final int id, final String name, final String email, final String password, final BookGenres favoriteGenre, final UserRole role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.favoriteGenre = favoriteGenre;
+        this.role = role;
     }
 
     public int getId() {
@@ -41,10 +44,16 @@ public class User {
         this.favoriteGenre = favoriteGenre;
     }
 
-    @Override
-    public String toString() {
-        return name + " (ulubiony gatunek: " + favoriteGenre + ")";
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
 
+    public void setPassword(String hashedPassword) {
+        this.password = hashedPassword;
+    }
 }

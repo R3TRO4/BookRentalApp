@@ -31,24 +31,48 @@ public class Book {
         return title;
     }
 
+    public void setTitle(String newTitle) {
+        title = newTitle;
+    }
+
     public String getAuthor() {
         return author;
+    }
+
+    public void setAuthor(String newAuthor) {
+        author = newAuthor;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String newDescription) {
+        description = newDescription;
+    }
+
     public int getReleaseYear() {
         return releaseYear;
+    }
+
+    public void setReleaseYear(int newReleaseYear) {
+        releaseYear = newReleaseYear;
     }
 
     public int getPageCount() {
         return pageCount;
     }
 
+    public void setPageCount(int newPageCount) {
+        pageCount = newPageCount;
+    }
+
     public BookGenres getGenre() {
         return genre;
+    }
+
+    public void setGenre(BookGenres newGenre) {
+        genre = newGenre;
     }
 
     public boolean isAvailable() {
@@ -58,4 +82,6 @@ public class Book {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+
 }

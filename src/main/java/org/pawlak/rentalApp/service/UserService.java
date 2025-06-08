@@ -1,9 +1,12 @@
 package org.pawlak.rentalApp.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.pawlak.rentalApp.dao.UserDao;
 import org.pawlak.rentalApp.model.Book;
 import org.pawlak.rentalApp.model.User;
 import org.pawlak.rentalApp.model.enums.BookGenres;
+import org.pawlak.rentalApp.model.enums.UserRole;
+import org.pawlak.rentalApp.util.RegisterValidation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,36 +34,14 @@ public class UserService {
                 .anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
     }
 
+
     public void register(String name, String email, String password, String favGenreStr) {
         List<String> errors = new ArrayList<>();
 
-        // Walidacja e-maila
-        if (!email.contains("@")) {
-            errors.add("Email address is invalid");
-        }
-        if (isEmailTaken(email)){
-            errors.add("An account for the given email already exists");
-        }
-
-        // Walidacja hasła
-        if (password.length() < 8) {
-            errors.add("Password must be at least 8 characters");
-        }
-
-        if (!password.matches(".*[A-Z].*")) {
-            errors.add("Password must contain at least one uppercase letter");
-        }
-        if (!password.matches(".*\\d.*")) {
-            errors.add("Password must contain at least one digit");
-        }
-
-        // Walidacja gatunku
-        BookGenres favoriteGenre = null;
-        try {
-            favoriteGenre = BookGenres.valueOf(favGenreStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            errors.add("Invalid book genre: " + favGenreStr);
-        }
+        // Użycie walidatorów
+        errors.addAll(RegisterValidation.validateEmail(email, isEmailTaken(email)));
+        errors.addAll(RegisterValidation.validatePassword(password));
+        BookGenres favoriteGenre = RegisterValidation.validateGenre(favGenreStr, errors);
 
         // Wyświetlenie błędów
         if (!errors.isEmpty()) {
@@ -68,16 +49,32 @@ public class UserService {
             return;
         } else {
             // Rejestracja użytkownika
-            User newUser = new User(0, name, email, password, favoriteGenre);
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            User newUser = new User(0, name, email, hashedPassword, favoriteGenre, UserRole.USER);
             userDao.insert(newUser);
-            System.out.println("Registration successful");
+            System.out.println("Rejestracja zakończona sukcesem. Możesz się teraz zalogować.");
         }
     }
 
     public Optional<User> login (String email, String password) {
         return userDao.findAll().stream()
-                .filter(u -> u.getEmail().equals(email) && u.getPassword().equals(password))
+                .filter(u -> u.getEmail().equals(email))
+                .filter(u -> BCrypt.checkpw(password, u.getPassword()))
                 .findFirst();
+    }
+
+    public boolean validateAndUpdatePassword(User user, String newPassword) {
+        List<String> errors = RegisterValidation.validatePassword(newPassword);
+        if (!errors.isEmpty()) {
+            errors.forEach(System.out::println);
+            return false;
+        }
+
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        userDao.update(user);
+        System.out.println("Hasło zostało zmienione pomyślnie.");
+        return true;
     }
 
     public void updateUser(User user) {

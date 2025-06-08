@@ -15,12 +15,13 @@ public class UserDao extends GenericDaoImpl<User> {
 
     @Override
     public void insert(User user) {
-        String sql = "INSERT INTO users (name, email, password, favorite_genre) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, favorite_genre, role) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getFavoriteGenre().name());
+            stmt.setString(5, user.getRole().name());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,13 +30,14 @@ public class UserDao extends GenericDaoImpl<User> {
 
     @Override
     public void update(User user) {
-        String sql = "UPDATE users SET name=?, email=?, password=?, favorite_genre=? WHERE id=?";
+        String sql = "UPDATE users SET name=?, email=?, password=?, favorite_genre=?, role=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getFavoriteGenre().name());
-            stmt.setInt(5, user.getId());
+            stmt.setString(5, user.getRole().name());
+            stmt.setInt(6, user.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

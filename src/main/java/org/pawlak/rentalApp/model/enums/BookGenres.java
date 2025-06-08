@@ -17,5 +17,6 @@ public enum BookGenres {
     MYSTERY,
     SHORT_STORY,
     NON_FICTION,
-    UNKNOWN;
+    UNKNOWN,
+    OTHER;
 }

@@ -8,16 +8,15 @@ import org.pawlak.rentalApp.model.Book;
 import org.pawlak.rentalApp.model.Rental;
 import org.pawlak.rentalApp.model.User;
 import org.pawlak.rentalApp.model.enums.BookGenres;
+import org.pawlak.rentalApp.model.enums.UserRole;
 import org.pawlak.rentalApp.service.BookService;
 import org.pawlak.rentalApp.service.RentalService;
 import org.pawlak.rentalApp.service.UserService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -57,6 +56,7 @@ public class Main {
 
                     try {
                         userService.register(name, email, password, genre);
+                        continue;
                     } catch (IllegalArgumentException e) {
                         System.out.println("Błąd: " + e.getMessage());
                     }
@@ -69,18 +69,181 @@ public class Main {
 
                     loggedUser = userService.login(email, password);
                     if (loggedUser.isPresent()) {
+                        User user = loggedUser.get();
+
+                        if (user.getRole() == UserRole.ADMIN && Objects.equals(user.getPassword(), "$2a$10$1Jbj73quvHUU1wul1j4OD.kQnZs4Psemp.aw7ttPrxm9eAYvaJJXC")) {
+                            System.out.println("Pierwsze logowanie jako administrator. Ustaw nowe hasło:");
+                            String newPassword = scanner.nextLine();
+
+                            if (userService.validateAndUpdatePassword(user, newPassword)) {
+                                loggedUser = Optional.of(user); // logujemy po zmianie hasła
+                            } else {
+                                System.out.println("Spróbuj ponownie.");
+                                break; // przerwij, bo hasło nie przeszło walidacji
+                            }
+                        }
+
                         System.out.println("Zalogowano jako: " + loggedUser.get().getName());
                     } else {
                         System.out.println("Błędny email lub hasło.");
                     }
                 } else if (choice == 3) {
+                    db.closeConnection();
                     System.out.println("Do widzenia!");
                     return;
                 } else {
                     System.out.println("Nieprawidłowy wybór.\n\n");
                 }
 
-                if (loggedUser.isPresent()) {
+                if (loggedUser.isPresent() && loggedUser.get().getRole() == UserRole.ADMIN) {
+                    loggedInMenu: while (true) {
+                        System.out.println("ADMIN PANEL:");
+                        System.out.println("1. Dodaj książkę");
+                        System.out.println("2. Edytuj książkę");
+                        System.out.println("3. Usuń książkę");
+                        System.out.println("4. Wyświetl wszystkich użytkowników");
+                        System.out.println("5. Wyloguj");
+
+                        String adminChoice = scanner.nextLine();
+
+                        switch (adminChoice) {
+                            case "1":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                System.out.println("Tytuł:");
+                                String title = scanner.nextLine();
+                                System.out.println("Autor:");
+                                String author = scanner.nextLine();
+                                System.out.println("Opis:");
+                                String description = scanner.nextLine();
+                                System.out.println("Rok wydania: ");
+                                int releaseYear = Integer.parseInt(scanner.nextLine());
+                                System.out.println("Ilość stron: ");
+                                int pageCount = Integer.parseInt(scanner.nextLine());
+                                System.out.println("Gatunek:");
+                                for (BookGenres g : BookGenres.values()) {
+                                    System.out.println("- " + g.name());
+                                }
+                                String genreStr = scanner.nextLine();
+
+
+                                try {
+                                    BookGenres genre = BookGenres.valueOf(genreStr.toUpperCase());
+                                    Book book = new Book(0, title, author, description, releaseYear, pageCount, genre, true);
+                                    bookService.addBook(book);
+                                    System.out.println("Dodano książkę.");
+                                } catch (IllegalArgumentException e) {
+                                    System.out.println("Niepoprawny gatunek.");
+                                }
+                                break;
+
+                            case "2":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                System.out.println("Podaj ID książki do edycji:");
+                                int editId = Integer.parseInt(scanner.nextLine());
+                                Optional<Book> bookOpt = bookService.getBookById(editId);
+                                if (bookOpt.isPresent()) {
+                                    Book b = bookOpt.get();
+
+                                    System.out.println("Nowy tytuł [" + b.getTitle() + "]: ");
+                                    String newTitle = scanner.nextLine();
+                                    if (!newTitle.isBlank()) {
+                                        b.setTitle(newTitle);
+                                    }
+
+                                    System.out.println("Nowy autor [" + b.getAuthor() + "]: ");
+                                    String newAuthor = scanner.nextLine();
+                                    if (!newAuthor.isBlank()) {
+                                        b.setAuthor(newAuthor);
+                                    }
+
+                                    System.out.println("Nowy opis: ");
+                                    String newDescription = scanner.nextLine();
+                                    if (!newDescription.isBlank()) {
+                                        b.setDescription(newDescription);
+                                    }
+
+                                    System.out.println("Nowy rok wydania: ");
+                                    String newReleaseYear = scanner.nextLine();
+                                    if (!newReleaseYear.isBlank()) {
+                                        try{
+                                            int newReleaseYearInt = Integer.parseInt(newReleaseYear);
+                                            b.setReleaseYear(newReleaseYearInt);
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Nieprawidłowa liczba. Zmiana została pominięta");
+                                        }
+                                    }
+
+                                    System.out.println("Nowy rok wydania: ");
+                                    String newPageCount = scanner.nextLine();
+                                    if (!newPageCount.isBlank()) {
+                                        try{
+                                            int newPageCountInt = Integer.parseInt(newPageCount);
+                                            b.setPageCount(newPageCountInt);
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Nieprawidłowa liczba. Zmiana została pominięta");
+                                        }
+                                    }
+
+                                    System.out.println("Nowy gatunek: ");
+                                    System.out.println("Dostępne gatunki to:");
+                                    for (BookGenres g : BookGenres.values()) {
+                                        System.out.println("- " + g.name());
+                                    }
+                                    String newGenreStr = scanner.nextLine();
+                                    if(!newGenreStr.isBlank()) {
+                                        try {
+                                            BookGenres newGenre = BookGenres.valueOf(newGenreStr.toUpperCase());
+                                            b.setGenre(newGenre);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(("Invalid book genre: " + e.getMessage()));
+                                        }
+                                    }
+
+                                    bookService.updateBook(b);
+                                    System.out.println("Zaktualizowano książkę.");
+                                } else {
+                                    System.out.println("Nie znaleziono książki.");
+                                }
+                                break;
+
+                            case "3":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                System.out.println("Podaj ID książki do usunięcia:");
+                                int deleteId = Integer.parseInt(scanner.nextLine());
+                                bookService.deleteBook(deleteId);
+                                System.out.println("Usunięto książkę.");
+                                break;
+
+                            case "4":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                List<User> allUsers = userService.getAllUsers();
+                                for (User u : allUsers) {
+                                    int activeCount = rentalService.getActiveRentalsForUser(u).size();
+                                    System.out.println(u.getId() + ": " + u.getName() + " - " + u.getEmail() + " | Aktywne wypożyczenia: " + activeCount);                                }
+                                break;
+
+                            case "5":
+                                System.out.println("Wylogowano.\n\n");
+                                break loggedInMenu;
+                        }
+                    }
+                } else {
                     loggedInMenu: while (true) {
                         System.out.println("\nWybierz opcję:");
                         System.out.println("1. Wyświetl dostępne książki");
