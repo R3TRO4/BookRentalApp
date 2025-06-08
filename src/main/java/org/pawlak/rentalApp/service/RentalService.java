@@ -31,12 +31,22 @@ public class RentalService {
                 .collect(Collectors.toList());
     }
 
-    public void rentBook(User user, Book book) {
-        if (!book.isAvailable()) {
-            throw new IllegalStateException("Książka jest już wypożyczona.");
-        }
+    public List<Rental> getActiveRentalsForUser(User user) {
+        return rentalDao.findAll().stream()
+                .filter(r -> r.getUser().getId() == user.getId() && !r.isReturned())
+                .collect(Collectors.toList());
+    }
 
-        Rental rental = new Rental(0, user, book, LocalDate.now(), null);
+    public List<Rental> getRentalHistoryForUser(User user) {
+        return rentalDao.findAll().stream()
+                .filter(r -> r.getUser().getId() == user.getId() && r.isReturned())
+                .collect(Collectors.toList());
+    }
+
+
+
+    public void rentBook(User user, Book book) {
+        Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusMonths(1), null);
         rentalDao.insert(rental);
 
         // Ustaw książkę jako niedostępną
@@ -53,15 +63,16 @@ public class RentalService {
         // Zaktualizuj datę zwrotu
         Rental updatedRental = new Rental(
                 rental.getId(),
-                rental.getUserId(),
-                rental.getBookId(),
+                rental.getUser(),
+                rental.getBook(),
                 rental.getRentalDate(),
+                rental.getDueDate(),
                 LocalDate.now()
         );
         rentalDao.update(updatedRental);
 
         // Ustaw książkę jako dostępną
-        Book book = rental.getBookId();
+        Book book = rental.getBook();
         book.setAvailable(true);
         bookDao.update(book);
     }

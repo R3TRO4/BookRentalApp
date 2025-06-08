@@ -4,16 +4,18 @@ import java.time.LocalDate;
 
 public class Rental {
     private int id;
-    private User userId;
-    private Book bookId;
+    private User user;
+    private Book book;
     private LocalDate rentalDate;
+    private LocalDate dueDate;
     private LocalDate returnDate;
 
-    public Rental(int id, User userId, Book bookId, LocalDate rentalDate, LocalDate returnDate) {
+    public Rental(int id, User user, Book book, LocalDate rentalDate, LocalDate dueDate, LocalDate returnDate) {
         this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
+        this.user = user;
+        this.book = book;
         this.rentalDate = rentalDate;
+        this.dueDate = dueDate;
         this.returnDate = returnDate;
     }
 
@@ -21,16 +23,20 @@ public class Rental {
         return id;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Book getBookId() {
-        return bookId;
+    public Book getBook() {
+        return book;
     }
 
     public LocalDate getRentalDate() {
         return rentalDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
     public LocalDate getReturnDate() {

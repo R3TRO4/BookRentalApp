@@ -2,6 +2,7 @@ package org.pawlak.rentalApp.service;
 
 import org.pawlak.rentalApp.dao.BookDao;
 import org.pawlak.rentalApp.model.Book;
+import org.pawlak.rentalApp.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,10 @@ public class BookService {
 
     public List<Book> getAvailableBooks() {
         return bookDao.getAvailableBooks();
+    }
+
+    public List<Book> getAvailableBooksByUserFavoriteGenre(User user) {
+        return bookDao.findAvailableBooksByGenre(user.getFavoriteGenre().name());
     }
 
     public boolean rentBook(int bookId) {

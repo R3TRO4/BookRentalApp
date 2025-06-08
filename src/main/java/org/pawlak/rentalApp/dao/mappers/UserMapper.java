@@ -12,7 +12,7 @@ public class UserMapper implements RowMapper<User> {
         return new User(
                 rs.getInt("id"),
                 rs.getString("name"),
-                rs.getString("login"),
+                rs.getString("email"),
                 rs.getString("password"),
                 BookGenres.valueOf(rs.getString("favorite_genre"))
         );

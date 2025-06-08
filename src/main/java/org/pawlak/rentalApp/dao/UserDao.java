@@ -15,7 +15,7 @@ public class UserDao extends GenericDaoImpl<User> {
 
     @Override
     public void insert(User user) {
-        String sql = "INSERT INTO users (firstName, email, password, favoriteGenre) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, favorite_genre) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
@@ -29,7 +29,7 @@ public class UserDao extends GenericDaoImpl<User> {
 
     @Override
     public void update(User user) {
-        String sql = "UPDATE users SET firstName=?, email=?, password=?, favoriteGenre=? WHERE id=?";
+        String sql = "UPDATE users SET name=?, email=?, password=?, favorite_genre=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());

@@ -5,6 +5,7 @@ import org.pawlak.rentalApp.model.Book;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,4 +65,20 @@ public class BookDao extends GenericDaoImpl<Book> {
         }
         return books;
     }
+
+    public List<Book> findAvailableBooksByGenre(String genre) {
+        String sql = "SELECT * FROM books WHERE genre = ? AND available = 1";
+        List<Book> books = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, genre);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                books.add(mapper.map(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+
 }

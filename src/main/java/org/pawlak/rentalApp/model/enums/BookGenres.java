@@ -16,5 +16,6 @@ public enum BookGenres {
     POSTAPOCALYPTIC,
     MYSTERY,
     SHORT_STORY,
-    NON_FICTION
+    NON_FICTION,
+    UNKNOWN;
 }

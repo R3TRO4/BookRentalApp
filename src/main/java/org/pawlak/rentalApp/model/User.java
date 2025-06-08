@@ -4,14 +4,14 @@ import org.pawlak.rentalApp.model.enums.BookGenres;
 
 public class User {
     private int id;
-    private String firstName;
+    private String name;
     private String email;
     private String password;
     private BookGenres favoriteGenre;
 
-    public User(final int id, final String firstName, final String email, final String password, final BookGenres favoriteGenre) {
+    public User(final int id, final String name, final String email, final String password, final BookGenres favoriteGenre) {
         this.id = id;
-        this.firstName = firstName;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.favoriteGenre = favoriteGenre;
@@ -22,7 +22,7 @@ public class User {
     }
 
     public String getName() {
-        return firstName;
+        return name;
     }
 
     public String getEmail() {
@@ -37,9 +37,13 @@ public class User {
         return favoriteGenre;
     }
 
+    public void setFavoriteGenre(BookGenres favoriteGenre) {
+        this.favoriteGenre = favoriteGenre;
+    }
+
     @Override
     public String toString() {
-        return firstName + " (ulubiony gatunek: " + favoriteGenre + ")";
+        return name + " (ulubiony gatunek: " + favoriteGenre + ")";
     }
 
 
