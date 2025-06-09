@@ -42,24 +42,4 @@ public class BookService {
     public List<Book> getAvailableBooksByUserFavoriteGenre(User user) {
         return bookDao.findAvailableBooksByGenre(user.getFavoriteGenre().name());
     }
-
-    public boolean rentBook(int bookId) {
-        Book book = bookDao.findById(bookId);
-        if (book != null && book.isAvailable()) {
-            book.setAvailable(false);
-            bookDao.update(book);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean returnBook(int bookId) {
-        Book book = bookDao.findById(bookId);
-        if (book != null && !book.isAvailable()) {
-            book.setAvailable(true);
-            bookDao.update(book);
-            return true;
-        }
-        return false;
-    }
 }

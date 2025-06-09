@@ -77,15 +77,15 @@ public class UserService {
         return true;
     }
 
-    public void updateUser(User user) {
-        userDao.update(user);
-    }
+//    public void updateUser(User user) {
+//        userDao.update(user);
+//    }
 
-    public void addUser(User newUser) {
-        userDao.insert(newUser);
-    }
+//    public void addUser(User newUser) {
+//        userDao.insert(newUser);
+//    }
 
-    public void deleteUser(int id) {
-        userDao.delete(id);
-    }
+//    public void deleteUser(int id) {
+//        userDao.delete(id);
+//    }
 }

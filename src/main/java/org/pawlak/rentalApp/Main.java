@@ -62,30 +62,34 @@ public class Main {
                     }
 
                 } else if (choice == 2) {
-                    System.out.println("Email: ");
-                    String email = scanner.nextLine();
-                    System.out.println("Hasło: ");
-                    String password = scanner.nextLine();
+                    while(true) {
+                        System.out.println("Email: ");
+                        String email = scanner.nextLine();
+                        System.out.println("Hasło: ");
+                        String password = scanner.nextLine();
 
-                    loggedUser = userService.login(email, password);
-                    if (loggedUser.isPresent()) {
-                        User user = loggedUser.get();
+                        loggedUser = userService.login(email, password);
+                        if (loggedUser.isPresent()) {
+                            User user = loggedUser.get();
 
-                        if (user.getRole() == UserRole.ADMIN && Objects.equals(user.getPassword(), "$2a$10$1Jbj73quvHUU1wul1j4OD.kQnZs4Psemp.aw7ttPrxm9eAYvaJJXC")) {
-                            System.out.println("Pierwsze logowanie jako administrator. Ustaw nowe hasło:");
-                            String newPassword = scanner.nextLine();
+                            if (user.getRole() == UserRole.ADMIN && Objects.equals(user.getPassword(), "$2a$10$1Jbj73quvHUU1wul1j4OD.kQnZs4Psemp.aw7ttPrxm9eAYvaJJXC")) {
+                                System.out.println("Pierwsze logowanie jako administrator. Ustaw nowe hasło:");
+                                String newPassword = scanner.nextLine();
 
-                            if (userService.validateAndUpdatePassword(user, newPassword)) {
-                                loggedUser = Optional.of(user); // logujemy po zmianie hasła
-                            } else {
-                                System.out.println("Spróbuj ponownie.");
-                                break; // przerwij, bo hasło nie przeszło walidacji
+                                if (userService.validateAndUpdatePassword(user, newPassword)) {
+                                    loggedUser = Optional.of(user); // logujemy po zmianie hasła
+                                } else {
+                                    System.out.println("Spróbuj ponownie.");
+                                    break; // przerwij, bo hasło nie przeszło walidacji
+                                }
                             }
-                        }
 
-                        System.out.println("Zalogowano jako: " + loggedUser.get().getName());
-                    } else {
-                        System.out.println("Błędny email lub hasło.");
+                            System.out.println("Zalogowano jako: " + loggedUser.get().getName());
+                            break;
+                        } else {
+                            System.out.println("Błędny email lub hasło.");
+                            loggedUser = Optional.empty();
+                        }
                     }
                 } else if (choice == 3) {
                     db.closeConnection();
@@ -247,12 +251,13 @@ public class Main {
                     loggedInMenu: while (true) {
                         System.out.println("\nWybierz opcję:");
                         System.out.println("1. Wyświetl dostępne książki");
-                        System.out.println("2. Wyświetl dostępne książki na podstawie ulubionego gatunku");
-                        System.out.println("3. Wypożycz książkę");
-                        System.out.println("4. Moje wypożyczenia");
-                        System.out.println("5. Zwróć książkę");
-                        System.out.println("6. Historia wypożyczeń");
-                        System.out.println("7. Wyloguj");
+                        System.out.println("2. Wyświetl wszystkie książki");
+                        System.out.println("3. Wyświetl dostępne książki na podstawie ulubionego gatunku");
+                        System.out.println("4. Wypożycz książkę");
+                        System.out.println("5. Moje wypożyczenia");
+                        System.out.println("6. Zwróć książkę");
+                        System.out.println("7. Historia wypożyczeń");
+                        System.out.println("8. Wyloguj");
 
                         String choice1 = scanner.nextLine();
 
@@ -269,6 +274,19 @@ public class Main {
                                 break;
 
                             case "2":
+                                List<Book> allBooks = bookService.getAllBooks();
+                                allBooks.forEach(book ->
+                                        System.out.println(
+                                                book.getId() + ": " +
+                                                        book.getTitle() +
+                                                        "\nAutor: " + book.getAuthor() +
+                                                        ",\nOpis: " + book.getDescription() +
+                                                        "\nGatunek: " + book.getGenre() +
+                                                        "\nDostępność: " + book.isAvailable() + "\n\n")
+                                );
+                                break;
+
+                            case "3":
                                 List<Book> genreBooks = bookService.getAvailableBooksByUserFavoriteGenre(loggedUser.get());
                                 if (genreBooks.isEmpty()) {
                                     System.out.println("Brak dostępnych książek w twoim ulubionym gatunku.");
@@ -280,7 +298,7 @@ public class Main {
                                 }
                                 break;
 
-                            case "3":
+                            case "4":
                                 System.out.println("Podaj ID książki do wypożyczenia");
                                 int bookId = Integer.parseInt(scanner.nextLine());
                                 Optional<Book> bookOpt = bookService.getBookById(bookId);
@@ -292,7 +310,7 @@ public class Main {
                                 }
                                 break;
 
-                            case "4":
+                            case "5":
                                 List<Rental> rentals = rentalService.getActiveRentalsForUser(loggedUser.get());
                                 if (rentals.isEmpty()) {
                                     System.out.println("Nie masz żadnych aktywnych wypożyczeń.");
@@ -302,7 +320,7 @@ public class Main {
                                 }
                                 break;
 
-                            case "5":
+                            case "6":
                                 List<Rental> activeRentals = rentalService.getActiveRentalsForUser(loggedUser.get());
                                 if (activeRentals.isEmpty()) {
                                     System.out.println("Nie masz żadnych aktywnych wypożyczeń.");
@@ -325,7 +343,7 @@ public class Main {
                                 }
                                 break;
 
-                            case "6":
+                            case "7":
                                 List<Rental> history = rentalService.getRentalHistoryForUser(loggedUser.get());
                                 if (history.isEmpty()) {
                                     System.out.println("Brak historii wypożyczeń.");
@@ -340,7 +358,7 @@ public class Main {
                                 }
                                 break;
 
-                            case "7":
+                            case "8":
                                 System.out.println("Wylogowano.\n\n");
                                 break loggedInMenu;
 

@@ -1,0 +1,103 @@
+package org.pawlak.rentalApp.service;
+
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.pawlak.rentalApp.dao.BookDao;
+import org.pawlak.rentalApp.dao.UserDao;
+import org.pawlak.rentalApp.model.Book;
+import org.pawlak.rentalApp.model.User;
+import org.pawlak.rentalApp.model.enums.BookGenres;
+import org.pawlak.rentalApp.model.enums.UserRole;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.Mockito.*;
+
+public class BookServiceTest {
+    private BookDao bookDao;
+    private BookService bookService;
+
+    @BeforeEach
+    public void setUp() {
+        bookDao = mock(BookDao.class);
+        bookService = new BookService(bookDao);
+    }
+
+    @Test
+    void shouldReturnAllBooks() {
+        List<Book> books = List.of(
+                new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION, true),
+                new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true)
+        );
+        when(bookDao.findAll()).thenReturn(books);
+
+        List<Book> result = bookService.getAllBooks();
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0)).isEqualTo(books.get(0));
+        assertThat(result.get(1)).isEqualTo(books.get(1));
+        verify(bookDao).findAll();
+    }
+
+    @Test
+    void shouldReturnBookById() {
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true);
+        when(bookDao.findById(1)).thenReturn(book);
+
+        Optional<Book> result = bookService.getBookById(1);
+        assertThat(result).contains(book);
+    }
+
+    @Test
+    void shouldAddNewBook() {
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true);
+        bookService.addBook(book);
+        verify(bookDao).insert(book);
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true);
+        bookService.updateBook(book);
+        verify(bookDao).update(book);
+    }
+
+    @Test
+    void shouldDeleteBook() {
+        int bookId = 42;
+        bookService.deleteBook(bookId);
+        verify(bookDao).delete(bookId);
+    }
+
+    @Test
+    void shouldReturnAvailableBooks() {
+        List<Book> availableBooks = List.of(
+                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true),
+                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true)
+        );
+        when(bookDao.getAvailableBooks()).thenReturn(availableBooks);
+        List<Book> result = bookService.getAvailableBooks();
+        assertThat(result).isEqualTo(availableBooks);
+        verify(bookDao).getAvailableBooks();
+    }
+
+    @Test
+    void shouldReturnAvailableBooksByUserFavoriteGenre() {
+        User user = new User(1, "Alice", "alice@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
+        List<Book> fantasyBooks = List.of(
+                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true)
+        );
+
+        when(bookDao.findAvailableBooksByGenre("FANTASY")).thenReturn(fantasyBooks);
+        List<Book> result = bookService.getAvailableBooksByUserFavoriteGenre(user);
+        assertThat(result).isEqualTo(fantasyBooks);
+        verify(bookDao).findAvailableBooksByGenre("FANTASY");
+    }
+
+
+
+
+}

@@ -44,7 +44,7 @@ public class RegisterValidation {
             return BookGenres.valueOf(genreStr.toUpperCase());
         } catch (IllegalArgumentException e) {
             errors.add("Invalid book genre: " + genreStr);
-            return null;
+            return BookGenres.UNKNOWN;
         }
     }
 }
