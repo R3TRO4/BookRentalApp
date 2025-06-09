@@ -28,6 +28,8 @@ public class User {
         return name;
     }
 
+    public void setName(String annaNowak) { this.name = annaNowak; }
+
     public String getEmail() {
         return email;
     }
@@ -40,20 +42,13 @@ public class User {
         return favoriteGenre;
     }
 
-    public void setFavoriteGenre(BookGenres favoriteGenre) {
-        this.favoriteGenre = favoriteGenre;
-    }
-
     public UserRole getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-
     public void setPassword(String hashedPassword) {
         this.password = hashedPassword;
     }
+
+
 }

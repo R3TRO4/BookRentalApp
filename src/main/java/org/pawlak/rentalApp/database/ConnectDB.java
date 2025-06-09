@@ -18,6 +18,18 @@ public class ConnectDB {
         }
     }
 
+    //#####TESTONLY#####//
+    public ConnectDB(String url) {
+        try {
+            connection = DriverManager.getConnection(url);
+            System.out.println("Database: Connection Successful");
+        } catch (SQLException e) {
+            System.out.println("Database: Connection Failed");
+            e.printStackTrace();
+        }
+    }
+
+
     public Connection getConnection() {
         return connection;
     }

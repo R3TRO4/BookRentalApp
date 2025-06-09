@@ -46,5 +46,9 @@ public class Rental {
     public boolean isReturned() {
         return returnDate != null;
     }
+
+    public void setReturnDate(LocalDate now) {
+        returnDate = now;
+    }
 }
 

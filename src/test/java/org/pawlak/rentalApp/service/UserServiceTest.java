@@ -85,35 +85,50 @@ public class UserServiceTest {
         assertThat(result).contains(user);
     }
 
-//    @Test
-//    void shouldUpdateUserPasswordWhenValid() {
-//        User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-//
-//        boolean result = userService.validateAndUpdatePassword(user, "NewPassword1");
-//
-//        assertThat(result).isTrue();
-//        verify(userDao).update(user);
-//    }
+    @Test
+    void shouldNotUpdatePasswordWhenInvalid() {
+        User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
 
-//    @Test
-//    void shouldRejectInvalidPasswordChange() {
-//        User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-//        boolean result = userService.validateAndUpdatePassword(user, "abc");
-//
-//        assertThat(result).isFalse();
-//        verify(userDao, never()).update(any());
-//    }
+        boolean result = userService.validateAndUpdatePassword(user, "123"); // za krótkie, niepoprawne
 
-//    @Test
-//    void shouldAddUser() {
-//        User newUser = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-//        userService.addUser(newUser);
-//        verify(userDao).insert(newUser);
-//    }
+        assertThat(result).isFalse();
+        verify(userDao, never()).update(any());
+    }
 
-//    @Test
-//    void shouldDeleteUser() {
-//        userService.deleteUser(5);
-//        verify(userDao).delete(5);
-//    }
+    @Test
+    void shouldUpdatePasswordWhenValid() {
+        User user = new User(1, "Jan", "jan@test.com", "oldHashedPass", BookGenres.FANTASY, UserRole.USER);
+
+        boolean result = userService.validateAndUpdatePassword(user, "NewStrongPass123");
+
+        assertThat(result).isTrue();
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userDao).update(userCaptor.capture());
+
+        User updatedUser = userCaptor.getValue();
+        assertThat(updatedUser.getPassword()).doesNotContain("NewStrongPass123"); // hasło powinno być zahashowane
+        assertThat(updatedUser.getPassword()).isNotEqualTo("oldHashedPass");
+    }
+
+    @Test
+    void shouldNotUpdatePasswordIfInvalid() {
+        User user = new User(1, "Test", "test@test.com", "oldHash", BookGenres.SCIENCE_FICTION, UserRole.USER);
+
+        // Przykład: hasło zbyt krótkie lub bez cyfry itp.
+        boolean result = userService.validateAndUpdatePassword(user, "short");
+
+        assertThat(result).isFalse();
+        verify(userDao, never()).update(any());
+    }
+
+    @Test
+    void shouldNotRegisterUserIfEmailIsInvalid() {
+        when(userDao.findAll()).thenReturn(List.of());
+
+        userService.register("Jan", "invalid-email", "Password1", "fantasy");
+
+        verify(userDao, never()).insert(any());
+    }
+
 }

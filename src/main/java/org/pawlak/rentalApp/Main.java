@@ -106,7 +106,9 @@ public class Main {
                         System.out.println("2. Edytuj książkę");
                         System.out.println("3. Usuń książkę");
                         System.out.println("4. Wyświetl wszystkich użytkowników");
-                        System.out.println("5. Wyloguj");
+                        System.out.println("5. Wyświetl wszystkie wypożyczenia");
+                        System.out.println("6. Wyświetl wszystkie aktywne wypożyczenia");
+                        System.out.println("7. Wyloguj");
 
                         String adminChoice = scanner.nextLine();
 
@@ -241,8 +243,36 @@ public class Main {
                                     int activeCount = rentalService.getActiveRentalsForUser(u).size();
                                     System.out.println(u.getId() + ": " + u.getName() + " - " + u.getEmail() + " | Aktywne wypożyczenia: " + activeCount);                                }
                                 break;
-
                             case "5":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                List<Rental> allRentals = rentalService.getAllRentals();
+                                allRentals.forEach(r ->
+                                        System.out.println(
+                                                r.getId() + ": " +
+                                                        "bookId: " + r.getBook() +
+                                                        ", BorrowerId: " + r.getUser() +
+                                                        ", Rental date: " + r.getRentalDate() +
+                                                        ", Due date: " + r.getDueDate() +
+                                                        ", Returned: " + r.isReturned()));
+                            case "6":
+                                if (loggedUser.get().getRole() != UserRole.ADMIN) {
+                                    System.out.println("Brak uprawnień. Tylko administrator ma dostęp do tej funkcji.");
+                                    break;
+                                }
+
+                                List<Rental> allActiveRentals = rentalService.getAllRentals();
+                                allActiveRentals.forEach(r ->
+                                        System.out.println(
+                                                r.getId() + ": " +
+                                                        "bookId: " + r.getBook() +
+                                                        ", BorrowerId: " + r.getUser() +
+                                                        ", Rental date: " + r.getRentalDate() +
+                                                        ", Due date: " + r.getDueDate()));
+                            case "7":
                                 System.out.println("Wylogowano.\n\n");
                                 break loggedInMenu;
                         }

@@ -97,7 +97,24 @@ public class BookServiceTest {
         verify(bookDao).findAvailableBooksByGenre("FANTASY");
     }
 
+    @Test
+    void settersShouldUpdateValues() {
+        Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA, true);
 
+        book.setTitle("New Title");
+        book.setAuthor("New Author");
+        book.setDescription("New Description");
+        book.setReleaseYear(2025);
+        book.setPageCount(500);
+        book.setGenre(BookGenres.SCIENCE_FICTION);
+        book.setAvailable(false);
 
-
+        assertThat(book.getTitle()).isEqualTo("New Title");
+        assertThat(book.getAuthor()).isEqualTo("New Author");
+        assertThat(book.getDescription()).isEqualTo("New Description");
+        assertThat(book.getReleaseYear()).isEqualTo(2025);
+        assertThat(book.getPageCount()).isEqualTo(500);
+        assertThat(book.getGenre()).isEqualTo(BookGenres.SCIENCE_FICTION);
+        assertThat(book.isAvailable()).isFalse();
+    }
 }
