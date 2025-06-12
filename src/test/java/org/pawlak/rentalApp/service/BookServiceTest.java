@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
@@ -29,8 +30,8 @@ public class BookServiceTest {
     @Test
     void shouldReturnAllBooks() {
         List<Book> books = List.of(
-                new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION, true),
-                new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true)
+                new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION,  0, 0,true),
+                new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true)
         );
         when(bookDao.findAll()).thenReturn(books);
 
@@ -44,7 +45,7 @@ public class BookServiceTest {
 
     @Test
     void shouldReturnBookById() {
-        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true);
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true);
         when(bookDao.findById(1)).thenReturn(book);
 
         Optional<Book> result = bookService.getBookById(1);
@@ -53,14 +54,14 @@ public class BookServiceTest {
 
     @Test
     void shouldAddNewBook() {
-        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true);
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true);
         bookService.addBook(book);
         verify(bookDao).insert(book);
     }
 
     @Test
     void shouldUpdateBook() {
-        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true);
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true);
         bookService.updateBook(book);
         verify(bookDao).update(book);
     }
@@ -75,8 +76,8 @@ public class BookServiceTest {
     @Test
     void shouldReturnAvailableBooks() {
         List<Book> availableBooks = List.of(
-                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY, true),
-                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true)
+                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true),
+                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true)
         );
         when(bookDao.getAvailableBooks()).thenReturn(availableBooks);
         List<Book> result = bookService.getAvailableBooks();
@@ -85,21 +86,8 @@ public class BookServiceTest {
     }
 
     @Test
-    void shouldReturnAvailableBooksByUserFavoriteGenre() {
-        User user = new User(1, "Alice", "alice@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        List<Book> fantasyBooks = List.of(
-                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY, true)
-        );
-
-        when(bookDao.findAvailableBooksByGenre("FANTASY")).thenReturn(fantasyBooks);
-        List<Book> result = bookService.getAvailableBooksByUserFavoriteGenre(user);
-        assertThat(result).isEqualTo(fantasyBooks);
-        verify(bookDao).findAvailableBooksByGenre("FANTASY");
-    }
-
-    @Test
     void settersShouldUpdateValues() {
-        Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA, true);
+        Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA,  0, 0,true);
 
         book.setTitle("New Title");
         book.setAuthor("New Author");
@@ -117,4 +105,17 @@ public class BookServiceTest {
         assertThat(book.getGenre()).isEqualTo(BookGenres.SCIENCE_FICTION);
         assertThat(book.isAvailable()).isFalse();
     }
+
+    @Test
+    public void shouldReturnZeroWhenNoRatings() {
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true);
+        assertEquals(0.0, book.getRating(), 0.001);
+    }
+
+    @Test
+    public void shouldReturnCorrectAverageRating() {
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 5, 30, true);
+        assertEquals(6.0, book.getRating(), 0.001);
+    }
+
 }

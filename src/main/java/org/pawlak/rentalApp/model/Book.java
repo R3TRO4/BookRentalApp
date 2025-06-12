@@ -10,9 +10,11 @@ public class Book {
     private int releaseYear;
     private int pageCount;
     private BookGenres genre;
+    private int countOfRates;
+    private int sumOfRates;
     private boolean available;
 
-    public Book(int id, String title, String author, String description, int releaseYear, int pageCount, BookGenres genre, boolean available) {
+    public Book(int id, String title, String author, String description, int releaseYear, int pageCount, BookGenres genre, int countOfRates, int sumOfRates, boolean available) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -20,6 +22,8 @@ public class Book {
         this.releaseYear = releaseYear;
         this.pageCount = pageCount;
         this.genre = genre;
+        this.countOfRates = countOfRates;
+        this.sumOfRates = sumOfRates;
         this.available = available;
     }
 
@@ -75,11 +79,31 @@ public class Book {
         genre = newGenre;
     }
 
+    public int getSumOfRates() {
+        return sumOfRates;
+    }
+
+    public void setSumOfRates(int sumOfRates) {
+        this.sumOfRates = sumOfRates;
+    }
+
+    public int getCountOfRates() {
+        return countOfRates;
+    }
+
+    public void setCountOfRates(int countOfRates) {
+        this.countOfRates = countOfRates;
+    }
+
     public boolean isAvailable() {
         return available;
     }
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public double getRating() {
+        return countOfRates == 0 ? 0 : (double) sumOfRates / countOfRates;
     }
 }

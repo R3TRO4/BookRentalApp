@@ -52,7 +52,7 @@ public class RentalServiceTest {
     @Test
     void shouldRentBookAndMarkItUnavailable() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION, true);
+        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,true);
 
         rentalService.rentBook(user, book);
 
@@ -63,7 +63,7 @@ public class RentalServiceTest {
 
     @Test
     void shouldReturnBookAndMarkItAvailable() {
-        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION, false);
+        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,false);
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER);
         Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), null);
 
@@ -135,7 +135,7 @@ public class RentalServiceTest {
     @Test
     void shouldThrowExceptionWhenRentalAlreadyReturned() {
         User user = new User(1, "Test", "test@mail.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY, false);
+        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY,  0, 0, false);
         Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), LocalDate.now());
 
         when(rentalDao.findById(1)).thenReturn(rental);

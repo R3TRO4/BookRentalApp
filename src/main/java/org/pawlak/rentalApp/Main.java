@@ -9,9 +9,9 @@ import org.pawlak.rentalApp.model.Rental;
 import org.pawlak.rentalApp.model.User;
 import org.pawlak.rentalApp.model.enums.BookGenres;
 import org.pawlak.rentalApp.model.enums.UserRole;
-import org.pawlak.rentalApp.service.BookService;
-import org.pawlak.rentalApp.service.RentalService;
-import org.pawlak.rentalApp.service.UserService;
+import org.pawlak.rentalApp.service.*;
+import org.pawlak.rentalApp.service.notifier.ConsoleNotifier;
+import org.pawlak.rentalApp.service.notifier.Notifier;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +31,12 @@ public class Main {
 
             BookService bookService = new BookService(bookDao);
             UserService userService = new UserService(userDao);
+            LoginService loginService = new LoginService(userDao);
+            RecommendationService recommendationService = new RecommendationService(bookDao);
             RentalService rentalService = new RentalService(rentalDao, bookDao);
+            RegisterService registerService = new RegisterService(userDao);
+            RatingService ratingService = new RatingService(bookDao);
+
 
 
             while (true) {
@@ -55,7 +60,7 @@ public class Main {
                     String genre = scanner.nextLine();
 
                     try {
-                        userService.register(name, email, password, genre);
+                        registerService.register(name, email, password, genre);
                         continue;
                     } catch (IllegalArgumentException e) {
                         System.out.println("Błąd: " + e.getMessage());
@@ -68,15 +73,21 @@ public class Main {
                         System.out.println("Hasło: ");
                         String password = scanner.nextLine();
 
-                        loggedUser = userService.login(email, password);
+                        loggedUser = loginService.login(email, password);
                         if (loggedUser.isPresent()) {
                             User user = loggedUser.get();
+
+                            if (loggedUser.isPresent()) {
+                                Notifier notifier = new ConsoleNotifier();
+                                NotificationService notificationService = new NotificationService(rentalService, notifier);
+                                notificationService.checkAndNotify(loggedUser.get());
+                            }
 
                             if (user.getRole() == UserRole.ADMIN && Objects.equals(user.getPassword(), "$2a$10$1Jbj73quvHUU1wul1j4OD.kQnZs4Psemp.aw7ttPrxm9eAYvaJJXC")) {
                                 System.out.println("Pierwsze logowanie jako administrator. Ustaw nowe hasło:");
                                 String newPassword = scanner.nextLine();
 
-                                if (userService.validateAndUpdatePassword(user, newPassword)) {
+                                if (registerService.validateAndUpdatePassword(user, newPassword)) {
                                     loggedUser = Optional.of(user); // logujemy po zmianie hasła
                                 } else {
                                     System.out.println("Spróbuj ponownie.");
@@ -138,7 +149,7 @@ public class Main {
 
                                 try {
                                     BookGenres genre = BookGenres.valueOf(genreStr.toUpperCase());
-                                    Book book = new Book(0, title, author, description, releaseYear, pageCount, genre, true);
+                                    Book book = new Book(0, title, author, description, releaseYear, pageCount, genre, 0, 0, true);
                                     bookService.addBook(book);
                                     System.out.println("Dodano książkę.");
                                 } catch (IllegalArgumentException e) {
@@ -300,7 +311,8 @@ public class Main {
                                                         book.getTitle() +
                                                         "\nAutor: " + book.getAuthor() +
                                                         ",\nOpis: " + book.getDescription() +
-                                                        "\nGatunek: " + book.getGenre() + "\n\n"));
+                                                        "\nGatunek: " + book.getGenre() +
+                                                        "\nŚrednia ocen: " + book.getRating() + "\n\n"));
                                 break;
 
                             case "2":
@@ -312,12 +324,13 @@ public class Main {
                                                         "\nAutor: " + book.getAuthor() +
                                                         ",\nOpis: " + book.getDescription() +
                                                         "\nGatunek: " + book.getGenre() +
+                                                        "\nŚrednia ocen: " + book.getRating() +
                                                         "\nDostępność: " + book.isAvailable() + "\n\n")
                                 );
                                 break;
 
                             case "3":
-                                List<Book> genreBooks = bookService.getAvailableBooksByUserFavoriteGenre(loggedUser.get());
+                                List<Book> genreBooks = recommendationService.getAvailableBooksByUserFavoriteGenre(loggedUser.get());
                                 if (genreBooks.isEmpty()) {
                                     System.out.println("Brak dostępnych książek w twoim ulubionym gatunku.");
                                 } else {
@@ -367,7 +380,19 @@ public class Main {
 
                                 try {
                                     rentalService.returnBook(rentalId);
-                                    System.out.println("Ksiązka została zwrócona.");
+                                    Optional<Rental> bookToRate = rentalService.getRentalById(rentalId);
+                                    System.out.println("Ksiązka została zwrócona.\n" +
+                                            "Jak oceniasz tą książkę w skali od 1 do 10?\n" +
+                                            "Twoja ocena: ");
+
+                                    if (bookToRate.isPresent()) {
+                                        int bookToRateId = bookToRate.get().getBook().getId();
+                                        int rate = Integer.parseInt(scanner.nextLine());
+                                        ratingService.addRating(bookToRateId, rate);
+                                    }
+
+                                    System.out.println("Dziękujemy za ocenę!");
+
                                 } catch (Exception e) {
                                     System.out.println("Błąd przy zwrocie: " + e.getMessage());
                                 }

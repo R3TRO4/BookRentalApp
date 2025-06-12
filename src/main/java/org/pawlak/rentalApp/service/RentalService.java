@@ -49,7 +49,6 @@ public class RentalService {
         Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusMonths(1), null);
         rentalDao.insert(rental);
 
-        // Ustaw książkę jako niedostępną
         book.setAvailable(false);
         bookDao.update(book);
     }
@@ -60,7 +59,6 @@ public class RentalService {
             throw new IllegalStateException("Nie można zwrócić tej książki.");
         }
 
-        // Zaktualizuj datę zwrotu
         Rental updatedRental = new Rental(
                 rental.getId(),
                 rental.getUser(),
@@ -71,7 +69,6 @@ public class RentalService {
         );
         rentalDao.update(updatedRental);
 
-        // Ustaw książkę jako dostępną
         Book book = rental.getBook();
         book.setAvailable(true);
         bookDao.update(book);

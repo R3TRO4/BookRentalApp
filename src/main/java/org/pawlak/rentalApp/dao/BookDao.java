@@ -18,7 +18,7 @@ public class BookDao extends GenericDaoImpl<Book> {
 
     @Override
     public void insert(Book book) {
-        String sql = "INSERT INTO books(title, author, description, releaseYear, pageCount, genre, available) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books(title, author, description, releaseYear, pageCount, genre, countOfRates, sumOfRates, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getAuthor());
@@ -26,7 +26,9 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setInt(4, book.getReleaseYear());
             stmt.setInt(5, book.getPageCount());
             stmt.setString(6, book.getGenre().name());
-            stmt.setBoolean(7, book.isAvailable());
+            stmt.setInt(7, book.getCountOfRates());
+            stmt.setInt(8, book.getSumOfRates());
+            stmt.setBoolean(9, book.isAvailable());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,7 +37,7 @@ public class BookDao extends GenericDaoImpl<Book> {
 
     @Override
     public void update(Book book) {
-        String sql = "UPDATE books SET title=?, author=?, description=?, releaseYear=?, pageCount=?, genre=?, available=? WHERE id=?";
+        String sql = "UPDATE books SET title=?, author=?, description=?, releaseYear=?, pageCount=?, genre=?, countOfRates=?, sumOfRates=?, available=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getAuthor());
@@ -43,8 +45,10 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setInt(4, book.getReleaseYear());
             stmt.setInt(5, book.getPageCount());
             stmt.setString(6, book.getGenre().name());
-            stmt.setBoolean(7, book.isAvailable());
-            stmt.setInt(8, book.getId());
+            stmt.setInt(7, book.getCountOfRates());
+            stmt.setInt(8, book.getSumOfRates());
+            stmt.setBoolean(9, book.isAvailable());
+            stmt.setInt(10, book.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,5 +84,4 @@ public class BookDao extends GenericDaoImpl<Book> {
         }
         return books;
     }
-
 }

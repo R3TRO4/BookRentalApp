@@ -38,8 +38,4 @@ public class BookService {
     public List<Book> getAvailableBooks() {
         return bookDao.getAvailableBooks();
     }
-
-    public List<Book> getAvailableBooksByUserFavoriteGenre(User user) {
-        return bookDao.findAvailableBooksByGenre(user.getFavoriteGenre().name());
-    }
 }

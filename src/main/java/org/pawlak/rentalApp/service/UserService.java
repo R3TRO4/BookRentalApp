@@ -29,54 +29,6 @@ public class UserService {
         return Optional.ofNullable(user);
     }
 
-    public boolean isEmailTaken(String email) {
-        return userDao.findAll().stream()
-                .anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
-    }
-
-
-    public void register(String name, String email, String password, String favGenreStr) {
-        List<String> errors = new ArrayList<>();
-
-        // Użycie walidatorów
-        errors.addAll(RegisterValidation.validateEmail(email, isEmailTaken(email)));
-        errors.addAll(RegisterValidation.validatePassword(password));
-        BookGenres favoriteGenre = RegisterValidation.validateGenre(favGenreStr, errors);
-
-        // Wyświetlenie błędów
-        if (!errors.isEmpty()) {
-            errors.forEach(System.out::println);
-            return;
-        } else {
-            // Rejestracja użytkownika
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            User newUser = new User(0, name, email, hashedPassword, favoriteGenre, UserRole.USER);
-            userDao.insert(newUser);
-            System.out.println("Rejestracja zakończona sukcesem. Możesz się teraz zalogować.");
-        }
-    }
-
-    public Optional<User> login (String email, String password) {
-        return userDao.findAll().stream()
-                .filter(u -> u.getEmail().equals(email))
-                .filter(u -> BCrypt.checkpw(password, u.getPassword()))
-                .findFirst();
-    }
-
-    public boolean validateAndUpdatePassword(User user, String newPassword) {
-        List<String> errors = RegisterValidation.validatePassword(newPassword);
-        if (!errors.isEmpty()) {
-            errors.forEach(System.out::println);
-            return false;
-        }
-
-        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-        user.setPassword(hashedPassword);
-        userDao.update(user);
-        System.out.println("Hasło zostało zmienione pomyślnie.");
-        return true;
-    }
-
 //    public void updateUser(User user) {
 //        userDao.update(user);
 //    }
