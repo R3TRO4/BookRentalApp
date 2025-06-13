@@ -25,14 +25,14 @@ class BookDaoTest {
 
         stmt.execute("CREATE TABLE books(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title VARCHAR, author VARCHAR, description VARCHAR, releaseYear INT, pageCount INT, genre VARCHAR, countOfRates INTEGER DEFAULT 0, sumOfRates INTEGER DEFAULT 0, available BOOLEAN)");
+                "title VARCHAR, author VARCHAR, description VARCHAR, releaseYear INT, pageCount INT, genre VARCHAR, countOfRates INTEGER DEFAULT 0, sumOfRates INTEGER DEFAULT 0, available BOOLEAN, timesRented INTEGER DEFAULT 0)");
 
         bookDao = new BookDao(connection);
     }
 
     @Test
     void shouldInsertAndUpdateBook() {
-        Book book = new Book(0, "Test Title", "Author Name", "Description", 2021, 250, BookGenres.FANTASY, 0, 0, true);
+        Book book = new Book(0, "Test Title", "Author Name", "Description", 2021, 250, BookGenres.FANTASY, 0, 0, true, 0);
 
         bookDao.insert(book);
 
@@ -52,8 +52,8 @@ class BookDaoTest {
 
     @Test
     void shouldGetAvailableBooks() {
-        Book book1 = new Book(0, "Available Book", "Author A", "Desc A", 2020, 100, BookGenres.FANTASY,  0, 0, true);
-        Book book2 = new Book(0, "Unavailable Book", "Author B", "Desc B", 2019, 150, BookGenres.SCIENCE_FICTION,  0, 0, false);
+        Book book1 = new Book(0, "Available Book", "Author A", "Desc A", 2020, 100, BookGenres.FANTASY,  0, 0, true, 0);
+        Book book2 = new Book(0, "Unavailable Book", "Author B", "Desc B", 2019, 150, BookGenres.SCIENCE_FICTION,  0, 0, false, 0);
 
         bookDao.insert(book1);
         bookDao.insert(book2);
@@ -65,9 +65,9 @@ class BookDaoTest {
 
     @Test
     void shouldFindAvailableBooksByGenre() {
-        Book book1 = new Book(0, "Fantasy Book 1", "Author X", "Desc X", 2018, 300, BookGenres.FANTASY,  0, 0, true);
-        Book book2 = new Book(0, "Fantasy Book 2", "Author Y", "Desc Y", 2017, 200, BookGenres.FANTASY,  0, 0, false);
-        Book book3 = new Book(0, "Drama Book", "Author Z", "Desc Z", 2016, 150, BookGenres.DRAMA,  0, 0, true);
+        Book book1 = new Book(0, "Fantasy Book 1", "Author X", "Desc X", 2018, 300, BookGenres.FANTASY,  0, 0, true, 0);
+        Book book2 = new Book(0, "Fantasy Book 2", "Author Y", "Desc Y", 2017, 200, BookGenres.FANTASY,  0, 0, false, 0);
+        Book book3 = new Book(0, "Drama Book", "Author Z", "Desc Z", 2016, 150, BookGenres.DRAMA,  0, 0, true, 0);
 
         bookDao.insert(book1);
         bookDao.insert(book2);

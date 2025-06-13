@@ -30,8 +30,8 @@ public class BookServiceTest {
     @Test
     void shouldReturnAllBooks() {
         List<Book> books = List.of(
-                new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION,  0, 0,true),
-                new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true)
+                new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION,  0, 0,true, 0),
+                new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0)
         );
         when(bookDao.findAll()).thenReturn(books);
 
@@ -45,7 +45,7 @@ public class BookServiceTest {
 
     @Test
     void shouldReturnBookById() {
-        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true);
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
         Optional<Book> result = bookService.getBookById(1);
@@ -54,14 +54,14 @@ public class BookServiceTest {
 
     @Test
     void shouldAddNewBook() {
-        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true);
+        Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0);
         bookService.addBook(book);
         verify(bookDao).insert(book);
     }
 
     @Test
     void shouldUpdateBook() {
-        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true);
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         bookService.updateBook(book);
         verify(bookDao).update(book);
     }
@@ -76,8 +76,8 @@ public class BookServiceTest {
     @Test
     void shouldReturnAvailableBooks() {
         List<Book> availableBooks = List.of(
-                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true),
-                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true)
+                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0),
+                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0)
         );
         when(bookDao.getAvailableBooks()).thenReturn(availableBooks);
         List<Book> result = bookService.getAvailableBooks();
@@ -87,7 +87,7 @@ public class BookServiceTest {
 
     @Test
     void settersShouldUpdateValues() {
-        Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA,  0, 0,true);
+        Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA,  0, 0,true, 0);
 
         book.setTitle("New Title");
         book.setAuthor("New Author");
@@ -108,14 +108,13 @@ public class BookServiceTest {
 
     @Test
     public void shouldReturnZeroWhenNoRatings() {
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true);
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
         assertEquals(0.0, book.getRating(), 0.001);
     }
 
     @Test
     public void shouldReturnCorrectAverageRating() {
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 5, 30, true);
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 5, 30, true, 0);
         assertEquals(6.0, book.getRating(), 0.001);
     }
-
 }

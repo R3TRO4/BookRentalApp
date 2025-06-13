@@ -16,7 +16,7 @@ public class RentalDao extends GenericDaoImpl<Rental> {
 
     @Override
     public void insert(Rental rental) {
-        String sql = "INSERT INTO rentals(user_id, book_id, rental_date, due_date, return_date) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO rentals(user_id, book_id, rental_date, due_date, return_date, penalty_fee) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, rental.getUser().getId());
             stmt.setInt(2, rental.getBook().getId());
@@ -27,6 +27,7 @@ public class RentalDao extends GenericDaoImpl<Rental> {
             } else {
                 stmt.setNull(5, java.sql.Types.VARCHAR);
             }
+            stmt.setDouble(6, rental.getPenaltyFee());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,7 +36,7 @@ public class RentalDao extends GenericDaoImpl<Rental> {
 
     @Override
     public void update(Rental rental) {
-        String sql = "UPDATE rentals SET user_id = ?, book_id = ?, rental_date = ?, due_date = ?, return_date = ? WHERE id = ?";
+        String sql = "UPDATE rentals SET user_id = ?, book_id = ?, rental_date = ?, due_date = ?, return_date = ?, penalty_fee = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, rental.getUser().getId());
             stmt.setInt(2, rental.getBook().getId());
@@ -44,7 +45,8 @@ public class RentalDao extends GenericDaoImpl<Rental> {
             stmt.setString(5, rental.getReturnDate() != null
                     ? rental.getReturnDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                     : null);
-            stmt.setInt(6, rental.getId());
+            stmt.setDouble(6, rental.getPenaltyFee());
+            stmt.setInt(7, rental.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

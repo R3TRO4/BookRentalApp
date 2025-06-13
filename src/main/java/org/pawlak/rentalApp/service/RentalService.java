@@ -43,10 +43,16 @@ public class RentalService {
                 .collect(Collectors.toList());
     }
 
+    public void updateRental(Rental rental) {
+        rentalDao.update(rental);
+    }
 
+    public Optional<Rental> getRentalById(int id) {
+        return Optional.ofNullable(rentalDao.findById(id));
+    }
 
     public void rentBook(User user, Book book) {
-        Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusMonths(1), null);
+        Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusMonths(1), null, 0);
         rentalDao.insert(rental);
 
         book.setAvailable(false);
@@ -65,16 +71,13 @@ public class RentalService {
                 rental.getBook(),
                 rental.getRentalDate(),
                 rental.getDueDate(),
-                LocalDate.now()
+                LocalDate.now(),
+                rental.getPenaltyFee()
         );
         rentalDao.update(updatedRental);
 
         Book book = rental.getBook();
         book.setAvailable(true);
         bookDao.update(book);
-    }
-
-    public Optional<Rental> getRentalById(int id) {
-        return Optional.ofNullable(rentalDao.findById(id));
     }
 }

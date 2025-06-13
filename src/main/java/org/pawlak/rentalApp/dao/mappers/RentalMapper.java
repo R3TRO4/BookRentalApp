@@ -39,6 +39,6 @@ public class RentalMapper implements RowMapper<Rental> {
 
         User user = userDao.findById(userId);
 
-        return new Rental(rentalId, user, book, rentalDate, dueDate, returnDate);
+        return new Rental(rentalId, user, book, rentalDate, dueDate, returnDate, 0);
     }
 }

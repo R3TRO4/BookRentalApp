@@ -19,7 +19,8 @@ public class BookMapper implements RowMapper<Book> {
                 BookGenres.valueOf(rs.getString("genre")),
                 rs.getInt("countOfRates"),
                 rs.getInt("sumOfRates"),
-                rs.getBoolean("available")
+                rs.getBoolean("available"),
+                rs.getLong("timesRented")
         );
     }
 }

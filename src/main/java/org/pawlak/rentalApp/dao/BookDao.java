@@ -18,7 +18,7 @@ public class BookDao extends GenericDaoImpl<Book> {
 
     @Override
     public void insert(Book book) {
-        String sql = "INSERT INTO books(title, author, description, releaseYear, pageCount, genre, countOfRates, sumOfRates, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books(title, author, description, releaseYear, pageCount, genre, countOfRates, sumOfRates, available, timesRented) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getAuthor());
@@ -29,6 +29,7 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setInt(7, book.getCountOfRates());
             stmt.setInt(8, book.getSumOfRates());
             stmt.setBoolean(9, book.isAvailable());
+            stmt.setLong(10, book.getTimesRented());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,7 +38,7 @@ public class BookDao extends GenericDaoImpl<Book> {
 
     @Override
     public void update(Book book) {
-        String sql = "UPDATE books SET title=?, author=?, description=?, releaseYear=?, pageCount=?, genre=?, countOfRates=?, sumOfRates=?, available=? WHERE id=?";
+        String sql = "UPDATE books SET title=?, author=?, description=?, releaseYear=?, pageCount=?, genre=?, countOfRates=?, sumOfRates=?, available=?, timesRented=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
             stmt.setString(2, book.getAuthor());
@@ -48,14 +49,14 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setInt(7, book.getCountOfRates());
             stmt.setInt(8, book.getSumOfRates());
             stmt.setBoolean(9, book.isAvailable());
-            stmt.setInt(10, book.getId());
+            stmt.setLong(10, book.getTimesRented());
+            stmt.setInt(11, book.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Przykładowa dodatkowa metoda
     public List<Book> getAvailableBooks() {
         List<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM books WHERE available = 1";

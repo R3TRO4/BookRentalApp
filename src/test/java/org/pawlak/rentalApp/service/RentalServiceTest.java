@@ -40,8 +40,8 @@ public class RentalServiceTest {
 
     @Test
     void shouldReturnOnlyActiveRentals() {
-        Rental returned = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(14), LocalDate.now());
-        Rental active = new Rental(2, null, null, LocalDate.now(), LocalDate.now().plusDays(14), null);
+        Rental returned = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(14), LocalDate.now(), 0);
+        Rental active = new Rental(2, null, null, LocalDate.now(), LocalDate.now().plusDays(14), null, 0);
         when(rentalDao.findAll()).thenReturn(List.of(returned, active));
 
         List<Rental> result = rentalService.getActiveRentals();
@@ -52,7 +52,7 @@ public class RentalServiceTest {
     @Test
     void shouldRentBookAndMarkItUnavailable() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,true);
+        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,true, 0);
 
         rentalService.rentBook(user, book);
 
@@ -63,9 +63,9 @@ public class RentalServiceTest {
 
     @Test
     void shouldReturnBookAndMarkItAvailable() {
-        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,false);
+        Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,false, 0);
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER);
-        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), null);
+        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), null, 0);
 
         when(rentalDao.findById(1)).thenReturn(rental);
 
@@ -78,7 +78,7 @@ public class RentalServiceTest {
 
     @Test
     void shouldThrowExceptionWhenReturningAlreadyReturnedBook() {
-        Rental rental = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now());
+        Rental rental = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
         when(rentalDao.findById(1)).thenReturn(rental);
 
         assertThatThrownBy(() -> rentalService.returnBook(1))
@@ -98,9 +98,9 @@ public class RentalServiceTest {
     @Test
     void shouldReturnOnlyActiveRentalsForUser() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Rental activeRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null);
-        Rental returnedRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now());
-        Rental otherUserRental = new Rental(3, new User(2, "Anna", "anna@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER), null, LocalDate.now(), LocalDate.now().plusDays(10), null);
+        Rental activeRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+        Rental returnedRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
+        Rental otherUserRental = new Rental(3, new User(2, "Anna", "anna@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER), null, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
 
         when(rentalDao.findAll()).thenReturn(List.of(activeRental, returnedRental, otherUserRental));
 
@@ -112,9 +112,9 @@ public class RentalServiceTest {
     @Test
     void shouldReturnRentalHistoryForUser() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Rental returnedRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now());
-        Rental activeRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null);
-        Rental otherUserReturned = new Rental(3, new User(2, "Anna", "anna@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER), null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now());
+        Rental returnedRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
+        Rental activeRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+        Rental otherUserReturned = new Rental(3, new User(2, "Anna", "anna@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER), null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
 
         when(rentalDao.findAll()).thenReturn(List.of(returnedRental, activeRental, otherUserReturned));
 
@@ -135,8 +135,8 @@ public class RentalServiceTest {
     @Test
     void shouldThrowExceptionWhenRentalAlreadyReturned() {
         User user = new User(1, "Test", "test@mail.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY,  0, 0, false);
-        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), LocalDate.now());
+        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY,  0, 0, false, 0);
+        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), LocalDate.now(), 0);
 
         when(rentalDao.findById(1)).thenReturn(rental);
 
@@ -145,6 +145,16 @@ public class RentalServiceTest {
                 .hasMessage("Nie można zwrócić tej książki.");
     }
 
+    @Test
+    public void shouldCallUpdateOnRentalDao() {
+        // given
+        Rental rental = mock(Rental.class);
 
+        // when
+        rentalService.updateRental(rental);
+
+        // then
+        verify(rentalDao).update(rental);
+    }
 
 }

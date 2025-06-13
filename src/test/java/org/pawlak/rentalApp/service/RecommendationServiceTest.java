@@ -32,7 +32,7 @@ public class RecommendationServiceTest {
     void shouldReturnAvailableBooksByUserFavoriteGenre() {
         User user = new User(1, "Alice", "alice@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
         List<Book> fantasyBooks = List.of(
-                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true)
+                new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true,0)
         );
 
         when(bookDao.findAvailableBooksByGenre("FANTASY")).thenReturn(fantasyBooks);
@@ -46,7 +46,7 @@ public class RecommendationServiceTest {
         // given
         List<Book> books = IntStream.range(0, 15)
                 .mapToObj(i -> {
-                    Book b = new Book(i, "Tytuł " + i, "Autor", "Opis", 2020, 300, null, i * 10, i, true);
+                    Book b = new Book(i, "Tytuł " + i, "Autor", "Opis", 2020, 300, null, i * 10, i, true, 0);
                     return b;
                 })
                 .collect(Collectors.toList());

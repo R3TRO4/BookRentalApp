@@ -35,11 +35,11 @@ class RentalDaoTest {
 
         stmt.execute("CREATE TABLE books(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title VARCHAR, author VARCHAR, description VARCHAR, releaseYear INT, pageCount INT, genre VARCHAR, countOfRates INTEGER DEFAULT 0, sumOfRates INTEGER DEFAULT 0, available BOOLEAN)");
+                "title VARCHAR, author VARCHAR, description VARCHAR, releaseYear INT, pageCount INT, genre VARCHAR, countOfRates INTEGER DEFAULT 0, sumOfRates INTEGER DEFAULT 0, available BOOLEAN, timesRented INTEGER DEFAULT 0)");
 
         stmt.execute("CREATE TABLE rentals(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "user_id INT, book_id INT, rental_date VARCHAR, due_date VARCHAR, return_date VARCHAR)");
+                "user_id INT, book_id INT, rental_date VARCHAR, due_date VARCHAR, return_date VARCHAR, penalty_fee)");
 
         userDao = new UserDao(connection);
         bookDao = new BookDao(connection);
@@ -50,7 +50,7 @@ class RentalDaoTest {
     void shouldInsertAndUpdateRental() {
         // Przygotuj user i book
         User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(0, "Władca Pierścieni", "Tolkien", "Epicka opowieść", 1954, 500, BookGenres.FANTASY,  0, 0,true);
+        Book book = new Book(0, "Władca Pierścieni", "Tolkien", "Epicka opowieść", 1954, 500, BookGenres.FANTASY,  0, 0,true, 0);
 
         userDao.insert(user);
         bookDao.insert(book);
@@ -60,7 +60,7 @@ class RentalDaoTest {
         Book insertedBook = bookDao.findAll().get(0);
 
         // Insert rental
-        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null);
+        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null, 0);
         rentalDao.insert(rental);
 
         // Pobierz wstawiony rental i sprawdź

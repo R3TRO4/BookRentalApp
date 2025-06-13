@@ -9,14 +9,16 @@ public class Rental {
     private LocalDate rentalDate;
     private LocalDate dueDate;
     private LocalDate returnDate;
+    private double penaltyFee;
 
-    public Rental(int id, User user, Book book, LocalDate rentalDate, LocalDate dueDate, LocalDate returnDate) {
+    public Rental(int id, User user, Book book, LocalDate rentalDate, LocalDate dueDate, LocalDate returnDate, double penaltyFee) {
         this.id = id;
         this.user = user;
         this.book = book;
         this.rentalDate = rentalDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+        this.penaltyFee = penaltyFee;
     }
 
     public int getId() {
@@ -49,6 +51,14 @@ public class Rental {
 
     public void setReturnDate(LocalDate now) {
         returnDate = now;
+    }
+
+    public double getPenaltyFee() {
+        return penaltyFee;
+    }
+
+    public void setPenaltyFee(double penaltyFee) {
+        this.penaltyFee = penaltyFee;
     }
 }
 

@@ -13,8 +13,9 @@ public class Book {
     private int countOfRates;
     private int sumOfRates;
     private boolean available;
+    private long timesRented;
 
-    public Book(int id, String title, String author, String description, int releaseYear, int pageCount, BookGenres genre, int countOfRates, int sumOfRates, boolean available) {
+    public Book(int id, String title, String author, String description, int releaseYear, int pageCount, BookGenres genre, int countOfRates, int sumOfRates, boolean available, long timesRented) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -25,6 +26,7 @@ public class Book {
         this.countOfRates = countOfRates;
         this.sumOfRates = sumOfRates;
         this.available = available;
+        this.timesRented = timesRented;
     }
 
     public int getId() {
@@ -101,6 +103,14 @@ public class Book {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public long getTimesRented() {
+        return timesRented;
+    }
+
+    public void setTimesRented(long timesRented) {
+        this.timesRented = timesRented;
     }
 
     public double getRating() {

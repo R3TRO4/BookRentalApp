@@ -35,16 +35,16 @@ public class NotificationServiceTest {
     public void shouldNotifyUserWhenReturnDateIsComing() {
         // given
         User user = new User(1, "Bartosz", "bartosz.pawlak@example.com", "Password1", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(2, "Tytuł książki", "Autor", "Opis", 2001, 300, BookGenres.FANTASY, 0, 0, true);
+        Book book = new Book(2, "Tytuł książki", "Autor", "Opis", 2001, 300, BookGenres.FANTASY, 0, 0, true,0);
 
         LocalDate today = LocalDate.now();
         LocalDate dueDate3 = today.plusDays(3);
         LocalDate dueDate2 = today.plusDays(2);
         LocalDate dueDate1 = today.plusDays(1);
 
-        Rental rental3 = new Rental(1, user, book, today.minusDays(4), dueDate3, null);
-        Rental rental2 = new Rental(2, user, book, today.minusDays(3), dueDate2, null);
-        Rental rental1 = new Rental(3, user, book, today.minusDays(2), dueDate1, null);
+        Rental rental3 = new Rental(1, user, book, today.minusDays(4), dueDate3, null, 0);
+        Rental rental2 = new Rental(2, user, book, today.minusDays(3), dueDate2, null, 0);
+        Rental rental1 = new Rental(3, user, book, today.minusDays(2), dueDate1, null, 0);
 
         when(rentalService.getActiveRentalsForUser(user)).thenReturn(List.of(rental3, rental2, rental1));
 

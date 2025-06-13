@@ -23,7 +23,7 @@ public class RatingServiceTest {
     @Test
     public void shouldAddRatingCorrectly() {
         // given
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true);
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
         // when
@@ -38,7 +38,7 @@ public class RatingServiceTest {
     @Test
     public void shouldAddTwoRatingsCorrectly() {
         // given
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true);
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
         // when
