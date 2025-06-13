@@ -117,4 +117,12 @@ public class BookServiceTest {
         Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 5, 30, true, 0);
         assertEquals(6.0, book.getRating(), 0.001);
     }
+
+    @Test
+    void testSetTimesRented() {
+        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
+        book.setTimesRented(5);
+
+        assertEquals(5, book.getTimesRented());
+    }
 }

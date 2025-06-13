@@ -78,6 +78,7 @@ public class RentalService {
 
         Book book = rental.getBook();
         book.setAvailable(true);
+        book.setTimesRented(book.getTimesRented() + 1);
         bookDao.update(book);
     }
 }

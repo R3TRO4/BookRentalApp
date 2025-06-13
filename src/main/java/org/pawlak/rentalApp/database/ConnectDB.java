@@ -29,7 +29,6 @@ public class ConnectDB {
         }
     }
 
-
     public Connection getConnection() {
         return connection;
     }

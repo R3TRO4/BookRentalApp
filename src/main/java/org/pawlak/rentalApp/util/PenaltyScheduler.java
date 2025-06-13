@@ -3,6 +3,7 @@ package org.pawlak.rentalApp.util;
 import org.pawlak.rentalApp.service.PenaltyService;
 import org.pawlak.rentalApp.service.RentalService;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,7 @@ public class PenaltyScheduler {
 
     public void start() {
         Runnable task = () -> {
-            System.out.println("Sprawdzam kary... " + java.time.LocalDateTime.now());
+            System.out.println("===> [SCHEDULER] Sprawdzam kary... " + LocalDateTime.now());
             rentalService.getAllRentals().forEach(penaltyService::applyPenalty);
         };
 

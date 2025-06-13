@@ -17,18 +17,14 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) throws SQLException {
         ConnectDB db = new ConnectDB();
         Connection connection = db.getConnection();
 
         if (connection != null) {
-
             AppContext context = new AppContext(connection);
+            context.penaltyScheduler.start();
             mainMenu(context, db);
-
-            penaltyScheduler.start(); // Zrobić drugi wątek
-
         } else {
             System.out.println("Connection error");
             System.exit(1);
@@ -181,7 +177,6 @@ public class Main {
         Optional<Book> bookOpt = context.bookService.getBookById(bookId);
         if (bookOpt.isPresent() && bookOpt.get().isAvailable()) {
             context.rentalService.rentBook(loggedUser, bookOpt.get());
-            context.statisticsService.incrementTimesRented(bookOpt.get());
             System.out.println("Wypożyczono książkę: " + bookOpt.get().getTitle());
         } else {
             System.out.println("Książka jest już wypożyczona.");

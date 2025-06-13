@@ -20,10 +20,6 @@ public class StatisticsService {
         return rentalService.getAllRentals().size();
     }
 
-    public void incrementTimesRented(Book book){
-        book.setTimesRented(book.getTimesRented() + 1);
-    }
-
     public Book getMostPopularBook() {
         return rentalService.getAllRentals().stream()
                 .collect(Collectors.groupingBy(Rental::getBook, Collectors.counting()))
