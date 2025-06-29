@@ -11,19 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RegisterValidationTest {
 
     @Test
-    void shouldReturnErrorIfEmailInvalid() {
+    void TC_085_shouldReturnErrorIfEmailInvalid() {
         List<String> errors = RegisterValidation.validateEmail("invalidEmail", false);
         assertThat(errors).contains("Email address is invalid");
     }
 
     @Test
-    void shouldReturnErrorIfEmailTaken() {
+    void TC_086_shouldReturnErrorIfEmailTaken() {
         List<String> errors = RegisterValidation.validateEmail("test@example.com", true);
         assertThat(errors).contains("An account for the given email already exists");
     }
 
     @Test
-    void shouldValidatePasswordCorrectly() {
+    void TC_087_shouldValidatePasswordCorrectly() {
         List<String> errors = RegisterValidation.validatePassword("abc");
         assertThat(errors)
                 .contains("Password must be at least 8 characters")
@@ -32,13 +32,13 @@ class RegisterValidationTest {
     }
 
     @Test
-    void shouldReturnEmptyListIfPasswordValid() {
+    void TC_088_shouldReturnEmptyListIfPasswordValid() {
         List<String> errors = RegisterValidation.validatePassword("Secure123");
         assertThat(errors).isEmpty();
     }
 
     @Test
-    void shouldReturnGenreIfValid() {
+    void TC_089_shouldReturnGenreIfValid() {
         List<String> errors = new ArrayList<>();
         BookGenres genre = RegisterValidation.validateGenre("fantasy", errors);
         assertThat(genre).isEqualTo(BookGenres.FANTASY);
@@ -46,7 +46,7 @@ class RegisterValidationTest {
     }
 
     @Test
-    void shouldAcceptValidGenre() {
+    void TC_090_shouldAcceptValidGenre() {
         List<String> errors = new ArrayList<>();
         BookGenres genre = RegisterValidation.validateGenre("OTHER", errors);
         assertThat(genre).isEqualTo(BookGenres.OTHER);
@@ -54,7 +54,7 @@ class RegisterValidationTest {
     }
 
     @Test
-    void shouldReturnErrorIfGenreInvalid() {
+    void TC_091_shouldReturnErrorIfGenreInvalid() {
         List<String> errors = new ArrayList<>();
         BookGenres genre = RegisterValidation.validateGenre("unknown_genre", errors);
         assertThat(genre).isEqualTo(BookGenres.UNKNOWN);

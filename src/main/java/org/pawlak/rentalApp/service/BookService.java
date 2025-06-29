@@ -2,7 +2,6 @@ package org.pawlak.rentalApp.service;
 
 import org.pawlak.rentalApp.dao.BookDao;
 import org.pawlak.rentalApp.model.Book;
-import org.pawlak.rentalApp.model.User;
 
 import java.util.List;
 import java.util.Optional;

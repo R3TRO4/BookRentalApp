@@ -2,7 +2,6 @@ package org.pawlak.rentalApp.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.pawlak.rentalApp.dao.UserDao;
 import org.pawlak.rentalApp.model.User;
 import org.pawlak.rentalApp.model.enums.BookGenres;
@@ -25,7 +24,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldReturnAllUsers() {
+    void TC_77_shouldReturnAllUsers() {
         List<User> users = List.of(
                 new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER),
                 new User(2, "Anna", "anna@test.com", "pass", BookGenres.FANTASY, UserRole.ADMIN)
@@ -39,7 +38,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldReturnUserById() {
+    void TC_78_shouldReturnUserById() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
         when(userDao.findById(1)).thenReturn(user);
 

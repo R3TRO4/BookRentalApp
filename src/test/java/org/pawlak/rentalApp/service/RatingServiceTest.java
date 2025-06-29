@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import org.pawlak.rentalApp.dao.BookDao;
 import org.pawlak.rentalApp.model.Book;
+import org.pawlak.rentalApp.model.enums.BookGenres;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -21,9 +22,9 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void shouldAddRatingCorrectly() {
+    public void TC_050_shouldAddRatingCorrectly() {
         // given
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
         // when
@@ -36,9 +37,9 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void shouldAddTwoRatingsCorrectly() {
+    public void TC_051_shouldAddTwoRatingsCorrectly() {
         // given
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
         // when
@@ -56,9 +57,11 @@ public class RatingServiceTest {
         verify(bookDao, times(2)).update(book);
     }
 
-
+    //**************************************************************//
+    //***********************Exemptions testing*********************//
+    //**************************************************************//
     @Test
-    public void shouldThrowExceptionForInvalidRating() {
+    public void TC_052_shouldThrowExceptionForInvalidRating() {
         // rating out of range
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             ratingService.addRating(1, 11);
@@ -67,7 +70,7 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenBookNotFound() {
+    public void TC_053_shouldThrowExceptionWhenBookNotFound() {
         // given
         when(bookDao.findById(999)).thenReturn(null);
 

@@ -60,5 +60,13 @@ public class Rental {
     public void setPenaltyFee(double penaltyFee) {
         this.penaltyFee = penaltyFee;
     }
+
+    public void setUser(User insertedUser) {
+        user = insertedUser;
+    }
+
+    public void setBook(Book insertedBook) {
+        book = insertedBook;
+    }
 }
 

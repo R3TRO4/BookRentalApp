@@ -1,14 +1,10 @@
 package org.pawlak.rentalApp.service;
 
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pawlak.rentalApp.dao.BookDao;
-import org.pawlak.rentalApp.dao.UserDao;
 import org.pawlak.rentalApp.model.Book;
-import org.pawlak.rentalApp.model.User;
 import org.pawlak.rentalApp.model.enums.BookGenres;
-import org.pawlak.rentalApp.model.enums.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +24,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void shouldReturnAllBooks() {
+    void TC_033_shouldReturnAllBooks() {
         List<Book> books = List.of(
                 new Book(1, "Dune", "Frank Herbert", "Epic science fiction novel set on the desert planet Arrakis.", 1965, 412, BookGenres.SCIENCE_FICTION,  0, 0,true, 0),
                 new Book(2, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0)
@@ -38,13 +34,13 @@ public class BookServiceTest {
         List<Book> result = bookService.getAllBooks();
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0)).isEqualTo(books.get(0));
+        assertThat(result.getFirst()).isEqualTo(books.getFirst());
         assertThat(result.get(1)).isEqualTo(books.get(1));
         verify(bookDao).findAll();
     }
 
     @Test
-    void shouldReturnBookById() {
+    void TC_034_shouldReturnBookById() {
         Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0);
         when(bookDao.findById(1)).thenReturn(book);
 
@@ -53,30 +49,30 @@ public class BookServiceTest {
     }
 
     @Test
-    void shouldAddNewBook() {
+    void TC_035_shouldAddNewBook() {
         Book book = new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0);
         bookService.addBook(book);
         verify(bookDao).insert(book);
     }
 
     @Test
-    void shouldUpdateBook() {
+    void TC_036_shouldUpdateBook() {
         Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         bookService.updateBook(book);
         verify(bookDao).update(book);
     }
 
     @Test
-    void shouldDeleteBook() {
-        int bookId = 42;
+    void TC_037_shouldDeleteBook() {
+        int bookId = 2;
         bookService.deleteBook(bookId);
         verify(bookDao).delete(bookId);
     }
 
     @Test
-    void shouldReturnAvailableBooks() {
+    void TC_038_shouldReturnAvailableBooks() {
         List<Book> availableBooks = List.of(
-                new Book(1, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0),
+                new Book(0, "The Hobbit", "J.R.R. Tolkien", "Fantasy adventure about Bilbo Baggins’ journey with dwarves.", 1937, 310, BookGenres.FANTASY,  0, 0,true, 0),
                 new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0)
         );
         when(bookDao.getAvailableBooks()).thenReturn(availableBooks);
@@ -86,7 +82,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void settersShouldUpdateValues() {
+    void TC_039_settersShouldUpdateValues() {
         Book book = new Book(1, "Old Title", "Old Author", "Old Desc", 1999, 100, BookGenres.DRAMA,  0, 0,true, 0);
 
         book.setTitle("New Title");
@@ -107,20 +103,20 @@ public class BookServiceTest {
     }
 
     @Test
-    public void shouldReturnZeroWhenNoRatings() {
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
+    public void TC_040_shouldReturnZeroWhenNoRatings() {
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         assertEquals(0.0, book.getRating(), 0.001);
     }
 
     @Test
-    public void shouldReturnCorrectAverageRating() {
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 5, 30, true, 0);
+    public void TC_041_shouldReturnCorrectAverageRating() {
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  5, 30,true, 0);
         assertEquals(6.0, book.getRating(), 0.001);
     }
 
     @Test
-    void testSetTimesRented() {
-        Book book = new Book(1, "Tytuł", "Autor", "Opis", 2020, 300, null, 0, 0, true, 0);
+    void TC_042_testSetTimesRented() {
+        Book book = new Book(1, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
         book.setTimesRented(5);
 
         assertEquals(5, book.getTimesRented());

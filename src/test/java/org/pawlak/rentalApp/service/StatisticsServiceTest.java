@@ -32,7 +32,7 @@ public class StatisticsServiceTest {
     }
 
     @Test
-    void shouldReturnTotalRentals() {
+    void TC_073_shouldReturnTotalRentals() {
         when(rentalService.getAllRentals()).thenReturn(List.of(
                 new Rental(1, user1, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
                 new Rental(2, user2, book2, LocalDate.now(), LocalDate.now().plusDays(7), null, 0)
@@ -44,7 +44,7 @@ public class StatisticsServiceTest {
     }
 
     @Test
-    void shouldReturnMostPopularBook() {
+    void TC_074_shouldReturnMostPopularBook() {
         when(rentalService.getAllRentals()).thenReturn(List.of(
                 new Rental(1, user1, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
                 new Rental(2, user2, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
@@ -57,7 +57,7 @@ public class StatisticsServiceTest {
     }
 
     @Test
-    void shouldReturnTop10MostPopularBooks() {
+    void TC_075_shouldReturnTop10MostPopularBooks() {
         when(rentalService.getAllRentals()).thenReturn(Arrays.asList(
                 new Rental(1, user1, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
                 new Rental(2, user2, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
@@ -71,7 +71,7 @@ public class StatisticsServiceTest {
     }
 
     @Test
-    void shouldReturnTop5MostActiveUsers() {
+    void TC_076_shouldReturnTop5MostActiveUsers() {
         when(rentalService.getAllRentals()).thenReturn(Arrays.asList(
                 new Rental(1, user1, book1, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),
                 new Rental(2, user1, book2, LocalDate.now(), LocalDate.now().plusDays(7), null, 0),

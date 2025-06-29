@@ -13,7 +13,6 @@ class GenericDaoImplTest {
     private Connection connection;
     private TestEntityDao dao;
 
-    // Prosta klasa testowa
     static class TestEntity {
         int id;
         String name;
@@ -73,7 +72,7 @@ class GenericDaoImplTest {
     }
 
     @Test
-    void shouldInsertAndFindById() {
+    void TC_024_shouldInsertAndFindById() {
         TestEntity entity = new TestEntity(1, "Test Name");
         dao.insert(entity);
 
@@ -83,7 +82,7 @@ class GenericDaoImplTest {
     }
 
     @Test
-    void shouldFindAll() {
+    void TC_025_shouldFindAll() {
         dao.insert(new TestEntity(1, "Name1"));
         dao.insert(new TestEntity(2, "Name2"));
 
@@ -92,11 +91,60 @@ class GenericDaoImplTest {
     }
 
     @Test
-    void shouldDeleteById() {
+    void TC_026_shouldDeleteById() {
         dao.insert(new TestEntity(1, "ToDelete"));
         dao.delete(1);
 
         TestEntity deleted = dao.findById(1);
         assertThat(deleted).isNull();
+    }
+
+    //**************************************************************//
+    //***********************Exemptions testing*********************//
+    //**************************************************************//
+    @Test
+    void TC_027_shouldReturnNullWhenFindByIdFails() throws SQLException {
+        connection.createStatement().execute("DROP TABLE test_entities");
+
+        TestEntity found = dao.findById(1);
+        assertThat(found).isNull();
+    }
+
+    @Test
+    void TC_028_shouldReturnEmptyListWhenFindAllFails() throws SQLException {
+        connection.createStatement().execute("DROP TABLE test_entities");
+
+        List<TestEntity> all = dao.findAll();
+        assertThat(all).isEmpty();
+    }
+
+    @Test
+    void TC_29_shouldNotThrowWhenDeleteFails() throws SQLException {
+        connection.createStatement().execute("DROP TABLE test_entities");
+
+        dao.delete(1);
+    }
+
+    @Test
+    void shouldNotThrowWhenConnectionClosedFindById() throws SQLException {
+        connection.close();
+
+        TestEntity found = dao.findById(1);
+        assertThat(found).isNull();
+    }
+
+    @Test
+    void shouldNotThrowWhenConnectionClosedFindAll() throws SQLException {
+        connection.close();
+
+        List<TestEntity> all = dao.findAll();
+        assertThat(all).isEmpty();
+    }
+
+    @Test
+    void shouldNotThrowWhenConnectionClosedDelete() throws SQLException {
+        connection.close();
+
+        dao.delete(1);
     }
 }

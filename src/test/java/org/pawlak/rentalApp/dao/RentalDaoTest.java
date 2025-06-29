@@ -47,37 +47,173 @@ class RentalDaoTest {
     }
 
     @Test
-    void shouldInsertAndUpdateRental() {
-        // Przygotuj user i book
+    void TC_015_shouldInsertAndUpdateRental() {
         User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(0, "Władca Pierścieni", "Tolkien", "Epicka opowieść", 1954, 500, BookGenres.FANTASY,  0, 0,true, 0);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
 
         userDao.insert(user);
         bookDao.insert(book);
 
-        // Pobierz user i book z bazy by mieć id
-        User insertedUser = userDao.findAll().get(0);
-        Book insertedBook = bookDao.findAll().get(0);
+        User insertedUser = userDao.findAll().getFirst();
+        Book insertedBook = bookDao.findAll().getFirst();
 
-        // Insert rental
         Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null, 0);
         rentalDao.insert(rental);
 
-        // Pobierz wstawiony rental i sprawdź
         List<Rental> rentals = rentalDao.findAll();
         assertThat(rentals).hasSize(1);
-        Rental insertedRental = rentals.get(0);
+        Rental insertedRental = rentals.getFirst();
         assertThat(insertedRental.getUser().getId()).isEqualTo(insertedUser.getId());
         assertThat(insertedRental.getBook().getId()).isEqualTo(insertedBook.getId());
         assertThat(insertedRental.getReturnDate()).isNull();
 
-        // Zaktualizuj zwrot daty
         insertedRental.setReturnDate(LocalDate.now());
 
         rentalDao.update(insertedRental);
 
-        // Pobierz ponownie i sprawdź update
-        Rental updatedRental = rentalDao.findAll().get(0);
+        Rental updatedRental = rentalDao.findAll().getFirst();
         assertThat(updatedRental.getReturnDate()).isEqualTo(insertedRental.getReturnDate());
+    }
+
+    @Test
+    void TC_016_shouldInsertRentalWithReturnDate() {
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+
+        userDao.insert(user);
+        bookDao.insert(book);
+
+        User insertedUser = userDao.findAll().getFirst();
+        Book insertedBook = bookDao.findAll().getFirst();
+
+        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), LocalDate.now(), 0);
+
+        rentalDao.insert(rental);
+
+        List<Rental> rentals = rentalDao.findAll();
+        assertThat(rentals).hasSize(1);
+        assertThat(rentals.getFirst().getReturnDate()).isEqualTo(rental.getReturnDate());
+    }
+
+    @Test
+    void TC_017_shouldUpdateRentalWithReturnDate() {
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+
+        userDao.insert(user);
+        bookDao.insert(book);
+
+        User insertedUser = userDao.findAll().getFirst();
+        Book insertedBook = bookDao.findAll().getFirst();
+
+        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null, 0);
+        rentalDao.insert(rental);
+
+        Rental insertedRental = rentalDao.findAll().getFirst();
+
+        insertedRental.setUser(insertedUser);
+        insertedRental.setBook(insertedBook);
+
+        insertedRental.setReturnDate(LocalDate.now());
+
+        rentalDao.update(insertedRental);
+
+        Rental updatedRental = rentalDao.findAll().getFirst();
+        assertThat(updatedRental.getReturnDate()).isNotNull();
+    }
+
+    @Test
+    void TC_18_shouldUpdateRentalWithoutReturnDate() {
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+
+        userDao.insert(user);
+        bookDao.insert(book);
+
+        User insertedUser = userDao.findAll().getFirst();
+        Book insertedBook = bookDao.findAll().getFirst();
+
+        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null, 0);
+        rentalDao.insert(rental);
+
+        Rental insertedRental = rentalDao.findAll().getFirst();
+
+        insertedRental.setUser(insertedUser);
+        insertedRental.setBook(insertedBook);
+
+        insertedRental.setReturnDate(null);
+
+        rentalDao.update(insertedRental);
+
+        Rental updatedRental = rentalDao.findAll().getFirst();
+        assertThat(updatedRental.getReturnDate()).isNull();
+    }
+
+    @Test
+    void TC_19_shouldInsertRentalWithoutReturnDate() {
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+
+        userDao.insert(user);
+        bookDao.insert(book);
+
+        User insertedUser = userDao.findAll().getFirst();
+        Book insertedBook = bookDao.findAll().getFirst();
+
+        Rental rental = new Rental(0, insertedUser, insertedBook, LocalDate.now(), LocalDate.now().plusDays(30), null, 0);
+
+        rentalDao.insert(rental);
+
+        List<Rental> rentals = rentalDao.findAll();
+        assertThat(rentals).hasSize(1);
+        assertThat(rentals.getFirst().getReturnDate()).isNull();
+    }
+
+    //**************************************************************//
+    //***********************Exemptions testing*********************//
+    //**************************************************************//
+    @Test
+    void TC_20_shouldNotThrowWhenInsertFailsDueToMissingTable() throws SQLException {
+        connection.createStatement().execute("DROP TABLE rentals");
+
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+        Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+
+        rentalDao.insert(rental);
+        assertThat(rentalDao.findAll()).isEmpty();
+    }
+
+    @Test
+    void TC_21_shouldNotThrowWhenUpdateFailsDueToMissingTable() throws SQLException {
+        connection.createStatement().execute("DROP TABLE rentals");
+
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+        Rental rental = new Rental(999, user, book, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+
+        rentalDao.update(rental);
+    }
+
+    @Test
+    void TC_22_shouldNotThrowWhenInsertFailsDueToClosedConnection() throws SQLException {
+        connection.close();
+
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+        Rental rental = new Rental(0, user, book, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+
+        rentalDao.insert(rental);
+    }
+
+    @Test
+    void TC_23_shouldNotThrowWhenUpdateFailsDueToClosedConnection() throws SQLException {
+        connection.close();
+
+        User user = new User(0, "Jan Kowalski", "jan@example.com", "hashedPass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(0, "Wiedźmin: ostatnie życzenie", "Andrzej Sapkowski", "Pierwszy tom opowiadań o Wiedźminie Geralcie", 1993, 330, BookGenres.FANTASY,  0, 0,true, 0);
+        Rental rental = new Rental(999, user, book, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
+
+        rentalDao.update(rental);
     }
 }

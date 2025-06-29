@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConnectDBTest {
 
     @Test
-    void shouldConnectAndCloseConnection() throws Exception {
+    void TC_079_shouldConnectAndCloseConnection() throws Exception {
         ConnectDB connectDB = new ConnectDB();
 
         Connection conn = connectDB.getConnection();
@@ -25,50 +25,49 @@ class ConnectDBTest {
     }
 
     @Test
-    void shouldHandleCloseWhenConnectionIsNull() throws Exception {
+    void TC_080_shouldHandleCloseWhenConnectionIsNull() throws Exception {
         ConnectDB connectDB = new ConnectDB();
 
-        // Ustawiamy pole 'connection' na null
         Field field = ConnectDB.class.getDeclaredField("connection");
         field.setAccessible(true);
         field.set(connectDB, null);
 
-        // Nie powinno rzucać wyjątku
         connectDB.closeConnection();
     }
 
     @Test
-    void shouldHandleSQLExceptionWhenConnectionFails() {
+    void TC_081_shouldHandleWhenConnectionPass() {
+        // Prawidłowy link
+        ConnectDB connectDB = new ConnectDB("jdbc:sqlite:database.db");
+        assertThat(connectDB.getConnection()).isNotNull();
+    }
+
+    //**************************************************************//
+    //***********************Exemptions testing*********************//
+    //**************************************************************//
+
+    @Test
+    void TC_082_shouldHandleSQLExceptionWhenConnectionFails() {
+        // Nieprawidłowy link
         ConnectDB connectDB = new ConnectDB("jdbc:sqlite::invalid:");
         assertThat(connectDB.getConnection()).isNull();
     }
 
     @Test
-    void shouldHandleSQLExceptionWhenConnectionPass() {
-        ConnectDB connectDB = new ConnectDB("jdbc:sqlite:database.db");
-        assertThat(connectDB.getConnection()).isNotNull();
-    }
-
-    @Test
-    void shouldHandleSQLExceptionWhenClosingConnection() throws Exception {
-        // mockujemy Connection
+    void TC_083_shouldHandleSQLExceptionWhenClosingConnection() throws Exception {
+        // Połączenie mockowane (symulowane)
         Connection mockConnection = mock(Connection.class);
 
-        // ustawiamy, że close() rzuca SQLException
+        // Kiedy metoda close() zostanie wywołana na mocku, ma zostać rzucony wyjątek
         doThrow(new SQLException("Closing failed")).when(mockConnection).close();
 
-        // tworzymy ConnectDB, ale nadpisujemy pole connection przez refleksję
-        ConnectDB connectDB = new ConnectDB();
+        ConnectDB connectDB = new ConnectDB(); // Rzeczywiste połączenie z bazą
 
-        // ustawiamy connection na mocka
-        java.lang.reflect.Field field = ConnectDB.class.getDeclaredField("connection");
-        field.setAccessible(true);
-        field.set(connectDB, mockConnection);
+        java.lang.reflect.Field field = ConnectDB.class.getDeclaredField("connection"); // Odwołuje się do pola po nazwie
+        field.setAccessible(true); // Omija modyfikator dostępu private
+        field.set(connectDB, mockConnection); // Zamiana prawdziwego połączenia na mockowane połączenie
 
-        // wywołujemy closeConnection, metoda powinna złapać wyjątek i go nie rzucać dalej
+        // Zamknięcie połączenia
         connectDB.closeConnection();
-
-        // test przejdzie, jeśli nie ma wyjątku
     }
-
 }

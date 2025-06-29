@@ -2,7 +2,6 @@ package org.pawlak.rentalApp.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.pawlak.rentalApp.model.Rental;
 
 import java.time.LocalDate;
@@ -22,7 +21,7 @@ public class PenaltyServiceTest {
     }
 
     @Test
-    public void shouldApplyPenaltyIfReturnedLate() {
+    public void TC_46_shouldApplyPenaltyIfReturnedLate() {
         // given
         LocalDate dueDate = LocalDate.now().minusDays(3);
         LocalDate returnDate = LocalDate.now(); // zwrócono dzisiaj, 3 dni po terminie
@@ -38,7 +37,7 @@ public class PenaltyServiceTest {
     }
 
     @Test
-    public void shouldApplyPenaltyIfNotReturnedAndPastDueDate() {
+    public void TC_47_shouldApplyPenaltyIfNotReturnedAndPastDueDate() {
         // given
         LocalDate dueDate = LocalDate.now().minusDays(2);
         Rental rental = new Rental(1, null, null, LocalDate.now().minusDays(10), dueDate, null, 0);
@@ -53,7 +52,7 @@ public class PenaltyServiceTest {
     }
 
     @Test
-    public void shouldSetPenaltyToZeroIfReturnedOnTime() {
+    public void TC_48shouldSetPenaltyToZeroIfReturnedOnTime() {
         // given
         LocalDate dueDate = LocalDate.now();
         LocalDate returnDate = LocalDate.now();
@@ -69,7 +68,7 @@ public class PenaltyServiceTest {
     }
 
     @Test
-    public void shouldSetPenaltyToZeroIfNotLateYet() {
+    public void TC_49_shouldSetPenaltyToZeroIfNotLateYet() {
         // given
         LocalDate dueDate = LocalDate.now().plusDays(1);
         Rental rental = new Rental(1, null, null, LocalDate.now().minusDays(5), dueDate, null, 0);

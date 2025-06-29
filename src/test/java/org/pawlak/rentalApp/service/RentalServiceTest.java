@@ -29,7 +29,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnAllRentals() {
+    void TC_062_shouldReturnAllRentals() {
         List<Rental> rentals = List.of(mock(Rental.class), mock(Rental.class));
         when(rentalDao.findAll()).thenReturn(rentals);
 
@@ -39,7 +39,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnOnlyActiveRentals() {
+    void TC_063_shouldReturnOnlyActiveRentals() {
         Rental returned = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(14), LocalDate.now(), 0);
         Rental active = new Rental(2, null, null, LocalDate.now(), LocalDate.now().plusDays(14), null, 0);
         when(rentalDao.findAll()).thenReturn(List.of(returned, active));
@@ -50,7 +50,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldRentBookAndMarkItUnavailable() {
+    void TC_064_shouldRentBookAndMarkItUnavailable() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
         Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,true, 0);
 
@@ -62,7 +62,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnBookAndMarkItAvailable() {
+    void TC_065_shouldReturnBookAndMarkItAvailable() {
         Book book = new Book(1, "Dune", "Herbert", "desc", 1965, 400, BookGenres.SCIENCE_FICTION,  0, 0,false, 0);
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.SCIENCE_FICTION, UserRole.USER);
         Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), null, 0);
@@ -77,7 +77,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenReturningAlreadyReturnedBook() {
+    void TC_066_shouldThrowExceptionWhenReturningAlreadyReturnedBook() {
         Rental rental = new Rental(1, null, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
         when(rentalDao.findById(1)).thenReturn(rental);
 
@@ -87,7 +87,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnEmptyOptionalWhenRentalNotFound() {
+    void TC_067_shouldReturnEmptyOptionalWhenRentalNotFound() {
         when(rentalDao.findById(100)).thenReturn(null);
 
         Optional<Rental> result = rentalService.getRentalById(100);
@@ -96,7 +96,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnOnlyActiveRentalsForUser() {
+    void TC_068_shouldReturnOnlyActiveRentalsForUser() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
         Rental activeRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
         Rental returnedRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
@@ -110,7 +110,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldReturnRentalHistoryForUser() {
+    void TC_069_shouldReturnRentalHistoryForUser() {
         User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
         Rental returnedRental = new Rental(1, user, null, LocalDate.now(), LocalDate.now().plusDays(10), LocalDate.now(), 0);
         Rental activeRental = new Rental(2, user, null, LocalDate.now(), LocalDate.now().plusDays(10), null, 0);
@@ -124,29 +124,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenRentalNotFound() {
-        when(rentalDao.findById(999)).thenReturn(null);
-
-        assertThatThrownBy(() -> rentalService.returnBook(999))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Nie można zwrócić tej książki.");
-    }
-
-    @Test
-    void shouldThrowExceptionWhenRentalAlreadyReturned() {
-        User user = new User(1, "Test", "test@mail.com", "pass", BookGenres.FANTASY, UserRole.USER);
-        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY,  0, 0, false, 0);
-        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), LocalDate.now(), 0);
-
-        when(rentalDao.findById(1)).thenReturn(rental);
-
-        assertThatThrownBy(() -> rentalService.returnBook(1))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Nie można zwrócić tej książki.");
-    }
-
-    @Test
-    public void shouldCallUpdateOnRentalDao() {
+    public void TC_070_shouldCallUpdateOnRentalDao() {
         // given
         Rental rental = mock(Rental.class);
 
@@ -157,4 +135,28 @@ public class RentalServiceTest {
         verify(rentalDao).update(rental);
     }
 
+    //**************************************************************//
+    //***********************Exemptions testing*********************//
+    //**************************************************************//
+    @Test
+    void TC_071_shouldThrowExceptionWhenRentalNotFound() {
+        when(rentalDao.findById(999)).thenReturn(null);
+
+        assertThatThrownBy(() -> rentalService.returnBook(999))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Nie można zwrócić tej książki.");
+    }
+
+    @Test
+    void TC_072_shouldThrowExceptionWhenRentalAlreadyReturned() {
+        User user = new User(1, "Test", "test@mail.com", "pass", BookGenres.FANTASY, UserRole.USER);
+        Book book = new Book(1, "Title", "Author", "Desc", 2000, 123, BookGenres.FANTASY,  0, 0, false, 0);
+        Rental rental = new Rental(1, user, book, LocalDate.now().minusDays(10), LocalDate.now().plusDays(20), LocalDate.now(), 0);
+
+        when(rentalDao.findById(1)).thenReturn(rental);
+
+        assertThatThrownBy(() -> rentalService.returnBook(1))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Nie można zwrócić tej książki.");
+    }
 }

@@ -32,7 +32,7 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setLong(10, book.getTimesRented());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to insert book", e);
         }
     }
 
@@ -53,7 +53,7 @@ public class BookDao extends GenericDaoImpl<Book> {
             stmt.setInt(11, book.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to update book", e);
         }
     }
 
@@ -66,7 +66,7 @@ public class BookDao extends GenericDaoImpl<Book> {
                 books.add(mapper.map(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to get available books", e);
         }
         return books;
     }
@@ -81,7 +81,7 @@ public class BookDao extends GenericDaoImpl<Book> {
                 books.add(mapper.map(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to find available books by genre", e);
         }
         return books;
     }

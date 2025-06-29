@@ -32,7 +32,7 @@ public class PenaltySchedulerTest {
     }
 
     @Test
-    public void shouldStartSchedulerAndApplyPenalty() throws InterruptedException {
+    public void TC_084_shouldStartSchedulerAndApplyPenalty() throws InterruptedException {
         // given
         Rental rental = mock(Rental.class);
         when(rentalService.getAllRentals()).thenReturn(List.of(rental));
@@ -40,8 +40,7 @@ public class PenaltySchedulerTest {
         // when
         penaltyScheduler.start();
 
-        // wait shortly to let the scheduler run the task
-        TimeUnit.MILLISECONDS.sleep(200); // wystarczy na jedno uruchomienie
+        TimeUnit.MILLISECONDS.sleep(200);
 
         // then
         verify(penaltyService, atLeastOnce()).applyPenalty(rental);

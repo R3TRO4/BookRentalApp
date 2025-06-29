@@ -117,7 +117,7 @@ public class Main {
 
 
     //**************************************************************//
-    //**************************USER AREA**************************//
+    //**************************USER AREA***************************//
     //**************************************************************//
     private static void getAvailableBooks(AppContext context) {
         List<Book> availableBooks = context.bookService.getAvailableBooks();

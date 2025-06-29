@@ -29,35 +29,35 @@ public class RegisterServiceTest {
 
 
     @Test
-    void shouldDetectIfEmailIsTaken() {
-        User existingUser = new User(1, "A", "test@abc.com", "", BookGenres.POLITICAL, UserRole.USER);
+    void TC_056_shouldDetectIfEmailIsTaken() {
+        User existingUser = new User(1, "Bartosz", "bartosz@example.com", "", BookGenres.POLITICAL, UserRole.USER);
         when(userDao.findAll()).thenReturn(List.of(existingUser));
 
-        boolean result = registerService.isEmailTaken("test@abc.com");
+        boolean result = registerService.isEmailTaken("bartosz@example.com");
 
         assertThat(result).isTrue();
     }
 
     @Test
-    void shouldRegisterNewUserWithValidData() {
+    void TC_057_shouldRegisterNewUserWithValidData() {
         when(userDao.findAll()).thenReturn(List.of());
 
-        registerService.register("Jan", "jan@example.com", "Password1", "fantasy");
+        registerService.register("Bartosz", "bartosz@example.com", "Password1", "fantasy");
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userDao).insert(userCaptor.capture());
 
         User inserted = userCaptor.getValue();
-        assertThat(inserted.getName()).isEqualTo("Jan");
-        assertThat(inserted.getEmail()).isEqualTo("jan@example.com");
+        assertThat(inserted.getName()).isEqualTo("Bartosz");
+        assertThat(inserted.getEmail()).isEqualTo("bartosz@example.com");
         AssertionsForInterfaceTypes.assertThat(inserted.getFavoriteGenre()).isEqualTo(BookGenres.FANTASY);
         AssertionsForInterfaceTypes.assertThat(inserted.getRole()).isEqualTo(UserRole.USER);
         assertThat(inserted.getPassword()).doesNotContain("Password1"); // powinno być zahashowane
     }
 
     @Test
-    void shouldNotUpdatePasswordWhenInvalid() {
-        User user = new User(1, "Jan", "jan@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
+    void TC_058_shouldNotUpdatePasswordWhenInvalid() {
+        User user = new User(1, "Bartosz", "bartosz@test.com", "pass", BookGenres.FANTASY, UserRole.USER);
 
         boolean result = registerService.validateAndUpdatePassword(user, "123"); // za krótkie, niepoprawne
 
@@ -66,8 +66,8 @@ public class RegisterServiceTest {
     }
 
     @Test
-    void shouldUpdatePasswordWhenValid() {
-        User user = new User(1, "Jan", "jan@test.com", "oldHashedPass", BookGenres.FANTASY, UserRole.USER);
+    void TC_059_shouldUpdatePasswordWhenValid() {
+        User user = new User(1, "Bartosz", "bartosz@test.com", "oldHashedPass", BookGenres.FANTASY, UserRole.USER);
 
         boolean result = registerService.validateAndUpdatePassword(user, "NewStrongPass123");
 
@@ -82,7 +82,7 @@ public class RegisterServiceTest {
     }
 
     @Test
-    void shouldNotUpdatePasswordIfInvalid() {
+    void TC_060_shouldNotUpdatePasswordIfInvalid() {
         User user = new User(1, "Test", "test@test.com", "oldHash", BookGenres.SCIENCE_FICTION, UserRole.USER);
 
         // Przykład: hasło zbyt krótkie lub bez cyfry itp.
@@ -93,10 +93,10 @@ public class RegisterServiceTest {
     }
 
     @Test
-    void shouldNotRegisterUserIfEmailIsInvalid() {
+    void TC_061_shouldNotRegisterUserIfEmailIsInvalid() {
         when(userDao.findAll()).thenReturn(List.of());
 
-        registerService.register("Jan", "invalid-email", "Password1", "fantasy");
+        registerService.register("Bartosz", "invalid-email", "Password1", "fantasy");
 
         verify(userDao, never()).insert(any());
     }

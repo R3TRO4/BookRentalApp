@@ -21,19 +21,16 @@ import static org.mockito.Mockito.*;
 public class NotificationServiceTest {
 
     private RentalService rentalService;
-    private NotificationService notificationService;
     private Notifier notifier;
 
     @BeforeEach
     public void setUp() {
         rentalService = mock(RentalService.class);
         notifier = mock(Notifier.class);
-        notificationService = new NotificationService(rentalService, notifier);
     }
 
     @Test
-    public void shouldNotifyUserWhenReturnDateIsComing() {
-        // given
+    public void TC_44_shouldNotifyUserWhenReturnDateIsComing() {
         User user = new User(1, "Bartosz", "bartosz.pawlak@example.com", "Password1", BookGenres.FANTASY, UserRole.USER);
         Book book = new Book(2, "Tytuł książki", "Autor", "Opis", 2001, 300, BookGenres.FANTASY, 0, 0, true,0);
 
@@ -59,27 +56,20 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void shouldPrintNotificationToConsole() {
-        // given
+    public void TC_45_shouldPrintNotificationToConsole() {
         User user = new User(1, "Bartosz", "bartosz.pawlak@example.com", "Password1", BookGenres.FANTASY, UserRole.USER);
         String message = "To jest testowa wiadomość";
         ConsoleNotifier consoleNotifier = new ConsoleNotifier();
 
-        // przechwycenie System.out
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
 
-        // when
         consoleNotifier.notify(user, message);
 
-        // then
         String expectedOutput = "Powiadomienie dla Bartosz: " + message + System.lineSeparator();
         assertEquals(expectedOutput, outContent.toString());
 
-        // przywrócenie System.out
         System.setOut(originalOut);
     }
-
-
 }

@@ -28,7 +28,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    void shouldLoginWithCorrectCredentials() {
+    void TC_043_shouldLoginWithCorrectCredentials() {
         String hashed = org.mindrot.jbcrypt.BCrypt.hashpw("Secret123", org.mindrot.jbcrypt.BCrypt.gensalt());
         User user = new User(1, "A", "mail@test.com", hashed, BookGenres.POETRY, UserRole.USER);
         when(userDao.findAll()).thenReturn(List.of(user));
