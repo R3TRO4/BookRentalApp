@@ -1,7 +1,6 @@
 package org.pawlak.rentalApp.dao;
 
 import org.pawlak.rentalApp.dao.mappers.UserMapper;
-import org.pawlak.rentalApp.model.Book;
 import org.pawlak.rentalApp.model.User;
 
 import java.sql.Connection;

@@ -10,7 +10,6 @@ import org.pawlak.rentalApp.model.enums.BookGenres;
 import org.pawlak.rentalApp.model.enums.UserRole;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;

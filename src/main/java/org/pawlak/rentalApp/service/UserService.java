@@ -1,15 +1,8 @@
 package org.pawlak.rentalApp.service;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.pawlak.rentalApp.dao.UserDao;
-import org.pawlak.rentalApp.model.Book;
 import org.pawlak.rentalApp.model.User;
-import org.pawlak.rentalApp.model.enums.BookGenres;
-import org.pawlak.rentalApp.model.enums.UserRole;
-import org.pawlak.rentalApp.util.RegisterValidation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +21,8 @@ public class UserService {
         User user = userDao.findById(id);
         return Optional.ofNullable(user);
     }
+
+// Work in progress
 
 //    public void updateUser(User user) {
 //        userDao.update(user);

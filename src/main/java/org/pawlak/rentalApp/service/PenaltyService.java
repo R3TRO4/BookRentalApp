@@ -8,8 +8,6 @@ import java.time.temporal.ChronoUnit;
 public class PenaltyService {
 
     private final RentalService rentalService;
-    private final double basePenalty = 10.0;
-    private final double dailyPenaltyRate = 4.0;
 
     public PenaltyService(RentalService rentalService) {
         this.rentalService = rentalService;
@@ -23,6 +21,8 @@ public class PenaltyService {
         long daysLate = ChronoUnit.DAYS.between(dueDate, effectiveDate);
 
         if (daysLate > 0) {
+            double basePenalty = 10.0;
+            double dailyPenaltyRate = 4.0;
             double penalty = basePenalty + (daysLate - 1) * dailyPenaltyRate;
             System.out.println(rental.getId());
             System.out.println(penalty);

@@ -32,7 +32,6 @@ public class RegisterService {
 
         if (!errors.isEmpty()) {
             errors.forEach(System.out::println);
-            return;
         } else {
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
             User newUser = new User(0, name, email, hashedPassword, favoriteGenre, UserRole.USER);

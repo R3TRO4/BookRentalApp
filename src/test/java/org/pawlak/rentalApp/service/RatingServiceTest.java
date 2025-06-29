@@ -63,9 +63,7 @@ public class RatingServiceTest {
     @Test
     public void TC_052_shouldThrowExceptionForInvalidRating() {
         // rating out of range
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            ratingService.addRating(1, 11);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> ratingService.addRating(1, 11));
         assertEquals("Ocena tylko w zakresie od 1 do 10.", exception.getMessage());
     }
 
@@ -75,9 +73,7 @@ public class RatingServiceTest {
         when(bookDao.findById(999)).thenReturn(null);
 
         // when & then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            ratingService.addRating(999, 5);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> ratingService.addRating(999, 5));
         assertEquals("Nie znaleziono książki.", exception.getMessage());
     }
 }

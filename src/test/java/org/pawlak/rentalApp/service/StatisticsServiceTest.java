@@ -20,10 +20,10 @@ public class StatisticsServiceTest {
     private RentalService rentalService;
     private StatisticsService statisticsService;
 
-    private User user1 = new User(1, "Bartosz", "bartosz@example.com", "Password1", BookGenres.FANTASY, UserRole.USER);
-    private User user2 = new User(2, "Paula", "paula@example.com", "Password2", BookGenres.ROMANCE, UserRole.USER);
-    private Book book1 = new Book(1, "Book A", "Author", "Desc", 2020, 200, null, 0, 0, true,0);
-    private Book book2 = new Book(2, "Book B", "Author", "Desc", 2021, 250, null, 0, 0, true, 0);
+    private final User user1 = new User(1, "Bartosz", "bartosz@example.com", "Password1", BookGenres.FANTASY, UserRole.USER);
+    private final User user2 = new User(2, "Paula", "paula@example.com", "Password2", BookGenres.ROMANCE, UserRole.USER);
+    private final Book book1 = new Book(1, "Book A", "Author", "Desc", 2020, 200, null, 0, 0, true,0);
+    private final Book book2 = new Book(2, "Book B", "Author", "Desc", 2021, 250, null, 0, 0, true, 0);
 
     @BeforeEach
     void setup() {
@@ -67,7 +67,7 @@ public class StatisticsServiceTest {
         List<Book> topBooks = statisticsService.getTop10MostPopularBooks();
 
         assertEquals(2, topBooks.size());
-        assertEquals(book1, topBooks.get(0)); // book1 has 2 rentals
+        assertEquals(book1, topBooks.getFirst()); // book1 has 2 rentals
     }
 
     @Test
@@ -81,6 +81,6 @@ public class StatisticsServiceTest {
         List<User> topUsers = statisticsService.getTop5MostActiveUsers();
 
         assertEquals(2, topUsers.size());
-        assertEquals(user1, topUsers.get(0)); // user1 has 2 rentals
+        assertEquals(user1, topUsers.getFirst()); // user1 has 2 rentals
     }
 }

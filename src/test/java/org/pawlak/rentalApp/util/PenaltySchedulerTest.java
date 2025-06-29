@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.pawlak.rentalApp.model.Rental;
 import org.pawlak.rentalApp.service.PenaltyService;
 import org.pawlak.rentalApp.service.RentalService;
-import org.pawlak.rentalApp.util.PenaltyScheduler;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

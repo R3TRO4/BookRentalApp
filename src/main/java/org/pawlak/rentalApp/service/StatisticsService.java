@@ -1,6 +1,5 @@
 package org.pawlak.rentalApp.service;
 
-import org.pawlak.rentalApp.dao.BookDao;
 import org.pawlak.rentalApp.model.Book;
 import org.pawlak.rentalApp.model.Rental;
 import org.pawlak.rentalApp.model.User;
